@@ -1,11 +1,14 @@
 
-const logOut = (obj) => {
-    return {
-        type: "LOG_OUT",
-        payload: obj
-    }
-}
+// export const setUser_R = (obj) => {
+//     console.log("Dispatch Not Wroking")
+//     return (dispatch)=> {
+//         dispatch({
+//         type: "SET_CURRENT_USER",
+//         payload: obj
+//         })
+//     }
+// }
 
-export default {
-    logOut
-}
+// export default {
+//     logOut
+// }

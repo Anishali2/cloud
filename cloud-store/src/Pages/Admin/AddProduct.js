@@ -46,8 +46,6 @@ const [image, setImage] = React.useState();
                               />
                             </svg>
                             </div>}
-                      
-                     
                     </div>
                   </div>
             </div>

@@ -1,9 +1,9 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment } from 'react'
+import React ,{ Fragment,useEffect } from 'react'
 import { Popover, Transition,Menu } from '@headlessui/react'
 import { useDispatch,useSelector } from 'react-redux'
 import { ShoppingCartIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
-
+import { Link } from 'react-router-dom'
 const user = {
   name: 'Tom Cook',
   email: 'tom@example.com',
@@ -13,20 +13,32 @@ const user = {
 const userNavigation = [
   { name: 'Your Profile', href: '#' },
   { name: 'Sign out', href: '#' },
+  { name: 'Admin', href: "/admin" },
+
 ]
+const userNavigate = [
+  { name: 'Your Profile', href: '#' },
+  { name: 'Sign out', href: '#' },
 
-
+]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function TopHeader() {
-    const isLoggenIn = useSelector(state => state.users);
+    const isLoggenIn = useSelector(state => state.users.userObj.role);
     const dispatch = useDispatch()
+    const [userState, setUserState] = React.useState(userNavigate)
+    console.log("Admin Login",isLoggenIn)
+    useEffect(() => {
+      if(isLoggenIn == "admin")
+      { setUserState(userNavigation)}
+      else{ setUserState(userNavigate)}
+    }, [isLoggenIn])
+    
   const logoutbtn = (value) => {
     if (value == 1){
-
       dispatch({ type: 'LOG_OUT',payload: {alert: true}})
     }
   }
@@ -66,12 +78,13 @@ export default function TopHeader() {
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
                         >
-                          <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                            {userNavigation.map((item,index) => (
-                              <Menu.Item key={item.name}>
+                          <Menu.Items className="origin-top-right absolute right-0 mt-8 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                            {userState.map((item,index) => (
+                               <Menu.Item key={item.name}>
                                 {({ active }) => (
+                                  <Link to={`${item.href}`}>
                                   <a onClick={() => logoutbtn(index)}
-                                    href={item.href}
+                                    // href={item.href}
                                     className={classNames(
                                       active ? 'bg-gray-100' : '',
                                       'block px-4 py-2 text-sm text-gray-700'
@@ -79,8 +92,11 @@ export default function TopHeader() {
                                   >
                                     {item.name}
                                   </a>
+                                  </Link>
                                 )}
-                              </Menu.Item>
+                              </Menu.Item> 
+                            
+                             
                             ))}
                           </Menu.Items>
                         </Transition>

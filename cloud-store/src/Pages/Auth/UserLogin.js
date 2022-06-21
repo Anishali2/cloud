@@ -7,6 +7,7 @@ import { userLoginValues } from '../../assets/constants';
 import { getUser } from '../../Axios/Requests/User';
 import {useSelector,useDispatch} from 'react-redux';
 import {useNavigate } from 'react-router-dom';
+import { setUser_R } from '../../redux/actions/user';
 export default function UserLogin() {
   const userObj = useSelector(state => state);
   const dispatch = useDispatch();
@@ -15,6 +16,8 @@ const loginUser = (values) => {
   
   getUser(values).then(res => {
     dispatch({type: 'SET_CURRENT_USER',payload: {login_state: true,user: res.data,}})
+    // const userState = {login_state: true,user: res.data}
+    // setUser_R(userState)
     console.log(res.data.role)
     if(res.data.role === 'admin'){
       navigate('/admin')

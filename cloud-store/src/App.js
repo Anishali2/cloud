@@ -32,7 +32,7 @@ const App = () => {
   const path = location.pathname;
 
 useEffect(() => {
-  if(path.includes("login")|| path.includes("UserSignup") || path.includes("AdminSignup")){
+  if(path.includes("login")|| path.includes("UserSignup") || path.includes("dmin")){
     setHeader(<div></div>);
     setFooter(<div></div>);
   }else {
