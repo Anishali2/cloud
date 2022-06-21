@@ -1,8 +1,8 @@
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
 import { useSelector,useDispatch } from 'react-redux'
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 
 export default function Delete(props) {

@@ -1,10 +1,8 @@
 import React from 'react'
 import image from '../../assets/error.png'
-import MainHeader from '../../Components/MainHeader'
 const Error404 = () => {
   return (
     <div>
-            <MainHeader/>
             <div className='bg-[#f6f5ff] px-4 pt-5 pb-4 sm:p-6 sm:pb-4 '>
             <div className=' px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-w-4xl mx-auto'>
               <p className='text-2xl font-bold'>404 Not Found</p>

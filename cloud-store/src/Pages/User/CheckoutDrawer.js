@@ -3,7 +3,7 @@ import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
 import { useSelector,useDispatch } from 'react-redux'
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const products = [
   {
     id: 1,
@@ -32,15 +32,12 @@ const products = [
 ]
 
 export default function CheckoutDrawer() {
-  const [open, setOpen] = useState(true)
   
   const dispatch = useDispatch()
   const cart = useSelector((state) => state.users.cartDrawer)
-  const navigate = useNavigate()
 
   const hideModel =() => {
     dispatch({type:'CART_DRAWER',payload:{drawer:false}})
-    setOpen(false)
   }
  console.log(cart)
 
@@ -139,7 +136,7 @@ export default function CheckoutDrawer() {
                       <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                       <div className="mt-6">
                         <a
-                          href="#"
+                          href="/"
                           className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                         >
                           Checkout

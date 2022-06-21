@@ -1,13 +1,14 @@
 import { Fragment, useState,useEffect } from 'react'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
-import { ChevronDownIcon, FilterIcon, MinusSmIcon, PlusSmIcon, ViewGridIcon } from '@heroicons/react/solid'
-import MainHeader from '../../Components/MainHeader'
+import { useNavigate } from 'react-router-dom'
+import { FilterIcon, MinusSmIcon, PlusSmIcon, ViewGridIcon } from '@heroicons/react/solid'
 import { getProduct } from '../../Axios/Requests/Product'
-
+import { subCategories ,filters} from '../../assets/constants'
 const Products = () => {
     const [products, setProducts] = useState([]);
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+    const navigate = useNavigate();
     const [obj,setObj] = useState({
     productss: products,
     categories: {
@@ -20,25 +21,14 @@ const Products = () => {
     
   }})
     
-const subCategories = [
-    { name: 'Totes', href: '#' },
-    { name: 'Backpacks', href: '#' },
-    { name: 'Travel Bags', href: '#' },
-    { name: 'Hip Bags', href: '#' },
-    { name: 'Laptop Sleeves', href: '#' },
-]
-  const filters = [
-    
-    {
-      id: 'category',
-      name: 'Category',
-     
-    }
-  ]
+
+  const ProductDetails = (data) => {
+    navigate(`/product/view/${data.name}`, { state: data });
+  }
     useEffect(() => {
       getProduct().then(res => {
-        
           setProducts(res.data);
+          console.log(res.data)
         })
         .catch((err) => {
           console.log(err);
@@ -78,7 +68,6 @@ const handleChange = (e) => {
     <div>
          <div className="bg-white">
       <div>
-        <MainHeader/>
         <Transition.Root show={mobileFiltersOpen} as={Fragment}>
           <Dialog as="div" className="relative z-40 lg:hidden" onClose={setMobileFiltersOpen}>
             <Transition.Child
@@ -149,13 +138,65 @@ const handleChange = (e) => {
                             <Disclosure.Panel className="pt-6">
                               <div className="space-y-6">
                                   <div className="flex items-center">
-                                    <input
-                                      type="checkbox"
-                                      className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
-                                      onChange={() => filterProducts()}
-                                      />
+                                  <input
+                                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
+                                  type="checkbox"
+                                  name="men"
+                                  checked={obj.categories.men}
+                                  onChange={(e) => handleChange(e)}
+                                />
                                     <label className="ml-3 min-w-0 flex-1 text-gray-500"> Men  </label>
                                   </div>
+                                  <div className="flex items-center">
+                                <input
+                                  type="checkbox"
+                                  name="women"
+                                  checked={obj.categories.women}
+                                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
+                                  onChange={(e) => handleChange(e)}
+                                />
+                                <label className="ml-3 text-sm text-gray-600">Women </label>
+                              </div>
+                              <div className="flex items-center">
+                                <input
+                                  type="checkbox"
+                                  checked={obj.categories.kids}
+                                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
+                                  name="kids"
+                                  onChange={(e) => handleChange(e)}
+                                />
+                                <label className="ml-3 text-sm text-gray-600">Kids </label>
+                              </div>
+                              <div className="flex items-center">
+                                <input
+                                  type="checkbox"
+                                  name="accessories"
+                                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
+                                  checked={obj.categories.accessories}
+                                  onChange={(e) => handleChange(e)}
+                                />
+                                <label className="ml-3 text-sm text-gray-600">Accessories </label>
+                              </div>
+                              <div className="flex items-center">
+                                <input
+                                  name='bags'
+                                  type="checkbox"
+                                  checked={obj.categories.bags}
+                                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
+                                  onChange={(e) => handleChange(e)}
+                                />
+                                <label className="ml-3 text-sm text-gray-600">Bags </label>
+                              </div>
+                              <div className="flex items-center">
+                                <input
+                                  type="checkbox"
+                                  checked={obj.categories.watch}
+                                  className="h-4 w-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500"
+                                  name='watch'
+                                  onChange={(e) => handleChange(e)}
+                                />
+                                <label className="ml-3 text-sm text-gray-600">Watch </label>
+                              </div>
                                 {/* ))} */}
                               </div>
                             </Disclosure.Panel>
@@ -303,7 +344,7 @@ const handleChange = (e) => {
                 <div className=" h-96 lg:h-full" >
                 <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
              {newFil.length === 0 ? products.map((product, index) => (
-                <div key={index} className="group relative border rounded p-4 hover:shadow-lg hover:scale-105 cursor-pointer transition">
+                <div onClick={() => ProductDetails(product)} key={index} className="group relative border rounded p-4 hover:shadow-lg hover:scale-105 cursor-pointer transition">
                   <div className="w-full min-h-[10rem] max-h-[12rem] bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden  lg:h-80 lg:aspect-none">
                     <img
                       src={`http://localhost:4000/${product.img}`}

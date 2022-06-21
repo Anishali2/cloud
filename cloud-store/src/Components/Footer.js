@@ -191,26 +191,26 @@ export const Footer = () => {
                 <ul className="mt-2 space-y-2">
                   <li>
                     <a
-                      href="/"
+                      href="/privacy"
                       className="transition-colors duration-300 text-white hover:text-sky-900"
                     >
-                      Infopreneur
+                      Privacy Policy
                     </a>
                   </li>
                   <li>
                     <a
-                      href="/"
+                      href="/termscondition"
                       className="transition-colors duration-300 text-white hover:text-sky-900"
                     >
-                      Personal
+                      Terms & Condition
                     </a>
                   </li>
                   <li>
                     <a
-                      href="/"
+                      href="/contactus"
                       className="transition-colors duration-300 text-white hover:text-sky-900"
                     >
-                      Wiki
+                      Contact Us
                     </a>
                   </li>
                   <li>

@@ -9,6 +9,7 @@ global.db = mongoose.createConnection(uri);
 require('dotenv').config();
 const cors = require('cors')
 
+
 // 
 app.use(express.static(__dirname + '/uploads/'));
 app.use(cookieParser());
@@ -22,4 +23,8 @@ app.use('/user', userRoutes);
 const productRoutes = require('./Routes/productRoutes');
 app.use('/product', productRoutes);
 
+const cartRoutes = require('./Routes/cartRoutes');
+app.use('/cart', cartRoutes);
+
 app.listen(port, () => console.log(`listening on http://localhost:${port}`));
+

@@ -17,8 +17,7 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
-import { ChevronDownIcon, FilterIcon, MinusSmIcon, PlusSmIcon, ViewGridIcon } from '@heroicons/react/solid'
-import MainHeader from '../Components/MainHeader'
+import { FilterIcon, MinusSmIcon, PlusSmIcon, ViewGridIcon } from '@heroicons/react/solid'
 
 
 const subCategories = [
@@ -54,7 +53,6 @@ export default function ProductHero() {
   return (
     <div className="bg-white">
       <div>
-        <MainHeader/>
         <Transition.Root show={mobileFiltersOpen} as={Fragment}>
           <Dialog as="div" className="relative z-40 lg:hidden" onClose={setMobileFiltersOpen}>
             <Transition.Child

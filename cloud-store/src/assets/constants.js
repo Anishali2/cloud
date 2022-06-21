@@ -4,17 +4,12 @@ import {
     BookmarkAltIcon,
     CalendarIcon,
     CursorClickIcon,
-    MenuIcon,
     RefreshIcon,
     ShieldCheckIcon,
     SupportIcon,
     ViewGridIcon,
-    XIcon,
   } from "@heroicons/react/outline";
-  import { Disclosure } from '@headlessui/react'
-  
-  import { ChevronDownIcon } from "@heroicons/react/solid";
-  
+
   export const initialValues = {
         name: '',
         phone: '',
@@ -120,3 +115,19 @@ export const userLoginValues = {
         { id: 3, name: "Bags", href: "#" },
         { id: 3, name: "Kids", href: "#" },
       ];
+
+      export  const subCategories = [
+        { name: 'Totes', href: '#' },
+        { name: 'Backpacks', href: '#' },
+        { name: 'Travel Bags', href: '#' },
+        { name: 'Hip Bags', href: '#' },
+        { name: 'Laptop Sleeves', href: '#' },
+    ]
+    export const filters = [
+    
+      {
+        id: 'category',
+        name: 'Category',
+       
+      }
+    ]

@@ -5,10 +5,8 @@ import { Formik,Form } from 'formik';
 
 export default function Example() {
 const [image, setImage] = React.useState();
-const [image2, setImage2] = React.useState();
-const form = new FormData();
+
    const  onImageChange = (event) => {
-    setImage2(event.target.files[0]);
         if (event.target.files && event.target.files[0]) {
             setImage(URL.createObjectURL(event.target.files[0]));
         }
