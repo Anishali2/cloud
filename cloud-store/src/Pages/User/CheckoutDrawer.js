@@ -1,9 +1,10 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
 import { useSelector,useDispatch } from 'react-redux'
 import { useNavigate } from "react-router-dom";
+import { getCart } from '../../Axios/Requests/Cart';
 const products = [
   {
     id: 1,
@@ -32,14 +33,31 @@ const products = [
 ]
 
 export default function CheckoutDrawer() {
-  
+  const [data, setData] = useState([{
+    productId:'',
+    productName:'',
+    productPrice:'',
+    productQuantity:'',
+    
+  }]);
+  const [open, setOpen] = useState();
+
+  const productsList = open ? open : data;
   const dispatch = useDispatch()
   const cart = useSelector((state) => state.users.cartDrawer)
 
+  useEffect(() => {
+    getCart().then(res => {
+      setOpen(res.data)  
+
+    }
+    )
+  }, [])
+  console.log("=-=-=-=>",data)
+  
   const hideModel =() => {
     dispatch({type:'CART_DRAWER',payload:{drawer:false}})
   }
- console.log(cart)
 
   return (
     <Transition.Root show={cart} as={Fragment}>
@@ -88,12 +106,12 @@ export default function CheckoutDrawer() {
                       <div className="mt-8">
                         <div className="flow-root">
                           <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {products.map((product) => (
-                              <li key={product.id} className="flex py-6">
+                            {productsList.map((product) => (
+                              <li key={product.productId} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img
-                                    src={product.imageSrc}
-                                    alt={product.imageAlt}
+                                    src={`http://localhost:4000/${product.productImage}`}
+                                    alt={product.productName}
                                     className="h-full w-full object-cover object-center"
                                   />
                                 </div>
@@ -102,14 +120,14 @@ export default function CheckoutDrawer() {
                                   <div>
                                     <div className="flex justify-between text-base font-medium text-gray-900">
                                       <h3>
-                                        <a href={product.href}> {product.name} </a>
+                                        <a href="#"> {product.productName} </a>
                                       </h3>
-                                      <p className="ml-4">{product.price}</p>
+                                      <p className="ml-4">{product.productPrice}</p>
                                     </div>
-                                    <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                                    {/* <p className="mt-1 text-sm text-gray-500">{product.color}</p> */}
                                   </div>
                                   <div className="flex flex-1 items-end justify-between text-sm">
-                                    <p className="text-gray-500">Qty {product.quantity}</p>
+                                    <p className="text-gray-500">Qty {product.productQty}</p>
 
                                     <div className="flex">
                                       <button

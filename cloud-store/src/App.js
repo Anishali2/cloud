@@ -44,7 +44,6 @@ useEffect(() => {
 
   const dispatch = useDispatch();
   const token = Cookies.get('token');
-  console.log(path);
 
   useEffect(() => { 
     axios.get('http://localhost:4000/user/authenticate', {

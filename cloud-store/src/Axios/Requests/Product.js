@@ -8,3 +8,6 @@ export function getProduct(){
 export function addProduct(data){
     return axiosClient.post('/product/add', JSON.stringify(data));
 }
+export function getProductById(data){
+    return axiosClient.post(`/product/get/${data}`);
+}

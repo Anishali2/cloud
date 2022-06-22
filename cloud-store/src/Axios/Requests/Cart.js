@@ -3,9 +3,10 @@ import {axiosClient} from '../api';
 
 
 export function getCart(){
-    return axiosClient.get('/product/get');
+    return axiosClient.get('/cart/get');
 }
 export const addCart = async (data,user,qty) =>  {
+    
     const obj = {
         userId:        user._id,
         userEmail:     user.email,
@@ -15,7 +16,5 @@ export const addCart = async (data,user,qty) =>  {
         productPrice:   data.price,
         productQty:     qty,
     }
-    
-    // return console.log(obj);
     return await axiosClient.post('/cart/add', JSON.stringify(obj));
 }

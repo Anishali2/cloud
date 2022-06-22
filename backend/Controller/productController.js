@@ -2,7 +2,6 @@ const model = require('../Model/productModel');
 
 exports.add = async(req, res, next) => {
   const data = req.body;
-console.log(data)
   var newItem = {
     name: data.name,
     price: data.price,
@@ -30,4 +29,15 @@ exports.get = async(req, res, next) => {
   }
 }
 
+exports.getProductById = async(req, res, next) => {
+  const id = req.params.id;
+  try {
+    const product = await model.findById(id);
+    res.send(product)
+    
+}
+catch (err) {
 
+    next(err)
+}
+}

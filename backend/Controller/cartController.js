@@ -8,24 +8,21 @@ exports.add = async(req, res, next) => {
     productId: data.productId
   }
   const cart = await model.findOne(obj);
-  if(cart) {
   const product = await productModel.findOne({_id:data.productId});
+  if(cart) {
         const total =  Number(cart.productQty) + Number(data.productQty);
     if (total > product.qty) {
       res.status(400).send({status:"Error",message:"Not enough stock"});
     }else {
-      const newObj = {...cart,
-        productQty:555
-            
-      }
-     const {userId , productId , productName , productImage , productPrice , productQty} = cart;
-      console.log(newObj)
-      // const update = await model.updateOne(cart._id,)
-
+      console.log("Checking Value",Number(total))
+      const updateProduct = await productModel.findByIdAndUpdate(data.productId, {qty: Number(product.qty) - Number(data.productQty)},{new:true});
+      const update = await model.findByIdAndUpdate(cart._id, {productQty:total},{new:true});
+      res.send(update);
     }
   }else {
     try {
       const cart = await model.create(data);
+      const updateProduct = await productModel.findByIdAndUpdate(data.productId, {qty:Number(product.qty) - Number(cart.productQty)},{new:true});
       res.send(cart);  
     } catch (err) {
       next(err)

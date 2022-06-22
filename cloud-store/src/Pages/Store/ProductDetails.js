@@ -1,10 +1,12 @@
 
 import { StarIcon ,MinusIcon ,PlusIcon} from '@heroicons/react/solid'
 import { useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState,useEffect } from 'react';
 import ReactImageMagnify from 'react-image-magnify';
 import { addCart } from '../../Axios/Requests/Cart';
 import { useSelector } from 'react-redux';
+import { getProductById } from '../../Axios/Requests/Product';
+
 const reviews = { href: '#', average: 4, totalCount: 117 }
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -15,37 +17,47 @@ export default function ProductDetails() {
   const {state} = useLocation();
   const [qty, setQty] = useState(1);
   const [error, setError] = useState('');
-  const data = state;
+  const [errorStock, setErrorStock] = useState('');
+  const [data,setData] = useState(state);
   const user = useSelector(state => state.users.userObj);
 
   const AddToCart = (value) => {
- 
-
       addCart(value,user,qty).then(res => {
-        console.log(res);
+        setErrorStock("")
+      }
+      ).catch(err => {
+        setErrorStock(err.response.data.message);
+      }
+      )
+  }
+    useEffect(() => {
+
+      getProductById(data._id).then(res => {
+        setData(res.data);
       }
       ).catch(err => {
         console.log(err);
       }
       )
-
-    
-
-
-
-  }
+    }, [])
 
   // increment and decrement qty
   const handleQty = (e) => {
-    if (e === '+1') {
-      if(data.qty >= qty){ setQty(qty + 1);}
-    } 
-    else if (e === '-1') { if(qty > 1){ setQty(qty - 1); }
+    if (e === "+1") {
+      if (data.qty > qty) {
+        setQty(qty + 1);
+      }
+    } else if (e === "-1") {
+      if (qty > 1) {
+        setQty(qty - 1);
+      }
     }
 
-  if(e === '-1'){ setError("")}
-  else if (qty >= data.qty) { setError("Out of Stock")}
-    
+    if (e === "-1") {
+      setError("");
+    } else if (qty >= data.qty) {
+      setError("Out of Stock");
+    }
   }
 
   return (
@@ -171,10 +183,9 @@ export default function ProductDetails() {
               <button
                 onClick={() => AddToCart(data)}
                 type="submit"
-                className="mt-10 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Add to Cart
-              </button>
+                
+                className={`mt-10 w-full ${errorStock ? "bg-red-600": "bg-indigo-600" } border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+              >{ errorStock ? "Out of Stock" : "Add to Cart" }</button>
           </div>
 
           <div className="py-10 lg:pt-6 lg:pb-16 lg:col-start-1 lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">

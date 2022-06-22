@@ -16,10 +16,7 @@ const loginUser = (values) => {
   
   getUser(values).then(res => {
     dispatch({type: 'SET_CURRENT_USER',payload: {login_state: true,user: res.data,}})
-    // const userState = {login_state: true,user: res.data}
-    // setUser_R(userState)
-    console.log(res.data.role)
-    if(res.data.role === 'admin'){
+      if(res.data.role === 'admin'){
       navigate('/admin')
     }
     else{

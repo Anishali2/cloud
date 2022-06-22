@@ -30,7 +30,6 @@ export default function TopHeader() {
     const isLoggenIn = useSelector(state => state.users.userObj.role);
     const dispatch = useDispatch()
     const [userState, setUserState] = React.useState(userNavigate)
-    console.log("Admin Login",isLoggenIn)
     useEffect(() => {
       if(isLoggenIn == "admin")
       { setUserState(userNavigation)}
