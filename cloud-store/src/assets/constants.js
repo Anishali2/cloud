@@ -131,3 +131,10 @@ export const userLoginValues = {
        
       }
     ]
+    export const cartValues = {
+      productId:'',
+      productName:'',
+      productPrice:'',
+      productQuantity:'',
+      
+    }

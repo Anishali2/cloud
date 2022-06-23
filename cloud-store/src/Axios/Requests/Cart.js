@@ -18,3 +18,6 @@ export const addCart = async (data,user,qty) =>  {
     }
     return await axiosClient.post('/cart/add', JSON.stringify(obj));
 }
+export function deleteCart(id){
+    return axiosClient.delete(`/cart/delete/${id}`);
+}

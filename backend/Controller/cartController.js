@@ -39,4 +39,26 @@ exports.get = async(req, res, next) => {
   }
 }
 
+exports.delete = async(req,res,next) => {
+  const id = req.params.id;
+  // const newId = '62b3126ba8747827486f8bcc'
+  const cart = await model.findById(id);                     // 1 Clear
+  const productId = cart.productId
+  const product = await productModel.findById(productId);     // 2 Clear
+  const productQtyById = product.qty                         // 3 Clear
+  const cartQty = cart.productQty                           // 4 Clear
+  const newTotalQty = Number(cartQty) + Number(productQtyById) // 5 Clear
+  console.log("=.=.>",newTotalQty)
+  try {
+    const updateProduct = await productModel.findByIdAndUpdate(productId, {qty:newTotalQty},{new:true}); // 6 Clear
+    const deleteCart = await model.findByIdAndDelete(id); // 7 Clear
+    const updatedCarts = await model.find();
+    res.send(updatedCarts)
+  } catch (err) {
+    next(err)
+  }
+}
+
+
+
 

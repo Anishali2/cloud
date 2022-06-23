@@ -2,7 +2,7 @@
 import React ,{ Fragment,useEffect } from 'react'
 import { Popover, Transition,Menu } from '@headlessui/react'
 import { useDispatch,useSelector } from 'react-redux'
-import { ShoppingCartIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
+import { ShoppingCartIcon } from '@heroicons/react/outline'
 import { Link } from 'react-router-dom'
 const user = {
   name: 'Tom Cook',
@@ -28,6 +28,7 @@ function classNames(...classes) {
 
 export default function TopHeader() {
     const isLoggenIn = useSelector(state => state.users.userObj.role);
+    const cartData = useSelector(state => state.users.cartData);
     const dispatch = useDispatch()
     const [userState, setUserState] = React.useState(userNavigate)
     useEffect(() => {
@@ -43,7 +44,7 @@ export default function TopHeader() {
   }
   const cart = () => {
 
-      dispatch({ type: 'CART_DRAWER',payload: {drawer: true}})
+      dispatch({ type: 'CART_DRAWER',payload: {drawer: true,cartData:cartData}})
     }
   
   return (
@@ -59,7 +60,7 @@ export default function TopHeader() {
                         type="button"
                         className=" bg-transparent p-1 mr-2 rounded-full text-white focus:outline-none hover:text-slate-400 relative flex justify-center items-center"
                       >
-                        <div className='    absolute -top-1 -right-1 text-sm'>2</div>
+                        <div className='    absolute -top-1 -right-1 text-sm'>{cartData.length}</div>
                         <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                       </button>
                         <div>

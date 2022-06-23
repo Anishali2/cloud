@@ -15,7 +15,7 @@ import UserSignup from "./Pages/Auth/UserSignup";
 import Favourite from "./Pages/Store/Favourite";
 import Categories from "./Pages/Store/Categories";
 import Logout from "./Pages/User/Logout";
-import {useDispatch} from 'react-redux';
+import {useDispatch , useSelector} from 'react-redux';
 import axios from "axios";
 import Cookies from 'js-cookie';
 import Dashboard from "./Pages/Admin/Dashboard";
@@ -25,12 +25,13 @@ import ProductDetails from "./Pages/Store/ProductDetails";
 import PrivacyPolicy from "./Pages/Store/FooterPages/PrivacyPolicy";
 import { Footer } from "./Components/Footer";
 import TermsCondition from "./Pages/Store/FooterPages/TermsCondition";
+import { getCart } from "./Axios/Requests/Cart";
 const App = () => {
   const [header , setHeader] = useState();
   const [footer , setFooter] = useState();
   const location = useLocation();
   const path = location.pathname;
-
+  const cart = useSelector(state => state.users.cartDrawer);
 useEffect(() => {
   if(path.includes("login")|| path.includes("UserSignup") || path.includes("dmin")){
     setHeader(<div></div>);
@@ -39,6 +40,7 @@ useEffect(() => {
     setHeader(<MainHeader/>)
     setFooter(<Footer/>)
   }
+
 }, [path])
 
 
@@ -50,10 +52,19 @@ useEffect(() => {
     headers: {'Authorization': `token ${token}`}
     }).then((res) => {
       dispatch({type:'SET_CURRENT_USER',payload:{login_state:true,user:res.data}});
+      console.log("User",res.data)
     }).catch((error) => {
       // console.log(error);
-    })
+    });
+
   }, []);
+  useEffect(() => {
+    getCart().then(res => {
+     dispatch({type:'CART_DRAWER',payload:{cartData:res.data,drawer:cart}})  
+
+    }
+    )
+  }, [cart])
 
 
   return (

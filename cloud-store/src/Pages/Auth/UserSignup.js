@@ -1,7 +1,7 @@
 import React  from 'react';
 import { LockClosedIcon } from '@heroicons/react/solid'
 import { Link ,useNavigate} from 'react-router-dom';
-import { Formik,Form } from 'formik';
+import { Formik,Form,Field  } from 'formik';
 import { validationSchema } from '../../Components/Validation/UserSchema';
 import { initialValues } from '../../assets/constants';
 import { addUser } from '../../Axios/Requests/User';
@@ -49,7 +49,8 @@ const registerUserForm = (values) => {
                 }}
                 >
                 {({ values,
-
+                    errors,
+                    touched,
                     handleChange,
                     handleBlur,}) => (
                       <Form>
@@ -61,52 +62,37 @@ const registerUserForm = (values) => {
                 <label htmlFor="email-address" className="sr-only">
                   Name
                 </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  // autoComplete="email"
-                  required
-                  className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Name"
-                  value={values.name}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  />
+                <Field 
+                name="name"
+                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                />
+                {errors.name && touched.name ? (
+                  <div className=' text-red-800'>{errors.name}</div>
+                ) : null}
+                
               </div>
               <div className="pt-5">
                 <label htmlFor="password" className="sr-only">
                   Phone
                 </label>
-                <input
-                  id="phone"
+                <Field
                   name="phone"
-                  type="number"
-                  autoComplete="current-password"
-                  required
                   className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Phone"
-                  value={values.phone}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
                 />
+                {errors.phone && touched.phone ? (
+             <div className=' text-red-800'>{errors.phone}</div>
+           ) : null}
               </div>
 
               <div className="pt-5">
                 <label htmlFor="email-address" className="sr-only">
                   Email address
                 </label>
-                <input
-                  id="email-address"
+                <Field
                   name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
                   className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Email address"
-                  value={values.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
                   />
               </div>
               <p></p>
@@ -115,16 +101,10 @@ const registerUserForm = (values) => {
                 <label htmlFor="email-address" className="sr-only">
                   Password
                 </label>
-                <input
-                  id="password"
+                <Field
                   name="password"
-                  type="password"
-                  required
                   className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
                   />
               </div>
                   
@@ -132,23 +112,16 @@ const registerUserForm = (values) => {
                 <label htmlFor="password" className="sr-only">
                   Confirm Password
                 </label>
-                <input
-                  id="confirmPassword"
+                <Field
                   name="confirmPassword"
-                  type="password"
-                  required
                   className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Confirm Password"
-                  value={values.confirmPassword}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
                 />
               </div>
             </div>
 
             <div>
               <button 
-                // onClick={() => submit()}
                 type="submit"
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >

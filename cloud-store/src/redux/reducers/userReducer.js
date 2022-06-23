@@ -6,7 +6,7 @@ const initialState = {
         logoutAlert:false,
         headerToken:'',
         cartDrawer:false,
-        
+        cartData:[]
 
     }
   }
@@ -38,11 +38,11 @@ const currentUser = (state = initialState, action) => {
             ...state,
                 users: {
                     ...state.users,
-                    cartDrawer:action.payload.drawer,
+                    cartDrawer: action.payload.drawer ,
+                    cartData:action.payload.cartData,
                     },
 
                 }
-        
         default:
             return state
     }
