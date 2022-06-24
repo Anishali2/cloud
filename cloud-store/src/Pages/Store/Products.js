@@ -28,7 +28,6 @@ const Products = () => {
     useEffect(() => {
       getProduct().then(res => {
           setProducts(res.data);
-          console.log(res.data)
         })
         .catch((err) => {
           console.log(err);

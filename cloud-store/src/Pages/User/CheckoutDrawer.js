@@ -15,30 +15,20 @@ export default function CheckoutDrawer() {
   const hideModel =() => {
     dispatch({type:'CART_DRAWER',payload:{drawer:false,cartData:cart.cartData}})
   }
-  console.log("+>",cart.cartData)
   const UndoValue = (i) => {
     setUndo(i)
     
     setTimeout(() => {
       setUndo()
-      // if(undo == i) {
-
         deleteCart(i).then(res => {
           dispatch({type:'CART_DRAWER',payload:{cartData:res.data,drawer:true}})  
-          console.log(res.data)
          }
          )
-      //    setUndo()
-      // }else {
-      //   setUndo()
-      // }
     }, 3000);
     
     
   }
   
-  
-  console.log(undo)
   return (
     <Transition.Root show={cart.cartDrawer} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={() => hideModel()}>

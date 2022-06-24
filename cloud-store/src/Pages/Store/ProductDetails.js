@@ -18,12 +18,13 @@ export default function ProductDetails() {
   const [qty, setQty] = useState(1);
   const [error, setError] = useState('');
   const [errorStock, setErrorStock] = useState('');
-  const [data,setData] = useState(state);
+  const [data,setData] = useState({});
   const user = useSelector(state => state.users.userObj);
 
   const AddToCart = (value) => {
       addCart(value,user,qty).then(res => {
         setErrorStock("")
+        setQty(1)
       }
       ).catch(err => {
         setErrorStock(err.response.data.message);
@@ -32,17 +33,19 @@ export default function ProductDetails() {
   }
     useEffect(() => {
 
-      getProductById(data._id).then(res => {
+      getProductById(state._id).then(res => {
         setData(res.data);
       }
       ).catch(err => {
         console.log(err);
       }
       )
-    }, [])
+    }, [qty,error,errorStock])
 
   // increment and decrement qty
   const handleQty = (e) => {
+    if (data.qty != 0) {
+
     if (e === "+1") {
       if (data.qty > qty) {
         setQty(qty + 1);
@@ -57,11 +60,16 @@ export default function ProductDetails() {
       setError("");
     } else if (qty >= data.qty) {
       setError("Out of Stock");
-    }
+    }  
+  }else {
+    setQty(0);
+    setError("No Products Available in Stock");
+  }
   }
 
   return (
     <div className="bg-white">
+      {data ? 
       <div className="pt-6">
         <nav aria-label="Breadcrumb">
           <ol role="list" className="max-w-2xl mx-auto px-4 flex items-center space-x-2 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -184,8 +192,8 @@ export default function ProductDetails() {
                 onClick={() => AddToCart(data)}
                 type="submit"
                 
-                className={`mt-10 w-full ${errorStock ? "bg-red-600": "bg-indigo-600" } border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-              >{ errorStock ? "Out of Stock" : "Add to Cart" }</button>
+                className={`mt-10 w-full ${data.qty == 0 ? "bg-red-600 hover:bg-red-400": "bg-indigo-600 hover:bg-indigo-700" } border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+              >{ data.qty == 0 ? "Out of Stock" : "Add to Cart" }</button>
           </div>
 
           <div className="py-10 lg:pt-6 lg:pb-16 lg:col-start-1 lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
@@ -199,6 +207,7 @@ export default function ProductDetails() {
           </div>
         </div>
       </div>
+: <div>Loading...</div>}
     </div>
   )
 }

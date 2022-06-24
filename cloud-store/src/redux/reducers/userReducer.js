@@ -6,7 +6,9 @@ const initialState = {
         logoutAlert:false,
         headerToken:'',
         cartDrawer:false,
-        cartData:[]
+        cartData:[],
+        searchBox:false,
+        searchProducts:[]
 
     }
   }
@@ -33,6 +35,16 @@ const currentUser = (state = initialState, action) => {
                         },
                         
                     }
+        case 'SEARCH_BOX':
+            return {
+            ...state,
+                users: {
+                    ...state.users,
+                    searchBox:action.payload.searchAlert,
+                    searchProducts:action.payload.products
+                    },
+                    
+                }
         case 'CART_DRAWER':
             return {
             ...state,
