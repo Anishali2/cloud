@@ -1,4 +1,3 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
@@ -15,6 +14,7 @@ export default function CheckoutDrawer() {
   const hideModel =() => {
     dispatch({type:'CART_DRAWER',payload:{drawer:false,cartData:cart.cartData}})
   }
+  const cartData = cart.cartData.filter(item => item.userId === cart.userObj._id)
   const UndoValue = (i) => {
     setUndo(i)
     
@@ -76,7 +76,7 @@ export default function CheckoutDrawer() {
                       <div className="mt-8">
                         <div className="flow-root">
                           <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {cart.cartData.map((product,index) => (
+                            {cartData.map((product,index) => (
                               <li key={product.productId} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img

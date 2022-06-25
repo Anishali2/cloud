@@ -19,6 +19,7 @@ import { Footer } from "../../Components/Footer";
 import TermsCondition from "./FooterPages/TermsCondition";
 import Logout from '../User/Logout'
 import SearchBox from "../User/SearchBox";
+import Loader from "../../Components/Loader";
 
 export const Routes = {
     Home:HomePage,
@@ -41,6 +42,7 @@ export const Routes = {
     Logout:Logout,
     AdminSignup:AdminSignup,
     UserLogin:UserLogin,
-    SearchBox:SearchBox
+    SearchBox:SearchBox,
+    Loader:Loader
     
 }

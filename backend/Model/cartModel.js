@@ -6,8 +6,8 @@ const cartSchema = Schema({
     productId:      { type: String},
     productName:    { type: String},
     productImage:   { type: String},
-    productPrice:   { type: String},
-    productQty:     { type: String},
+    productPrice:   { type: Number},
+    productQty:     { type: Number},
 });
 
 /* global db */

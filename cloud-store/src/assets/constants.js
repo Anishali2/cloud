@@ -138,3 +138,12 @@ export const userLoginValues = {
       productQuantity:'',
       
     }
+    export const productValues = {
+      name:'',
+      // img:'',
+      price:'',
+      qty:'',
+      category:'',
+      description:'',
+      
+    }

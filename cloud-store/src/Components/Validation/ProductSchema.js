@@ -11,5 +11,5 @@ export const validationSchema = Yup.object({
   qty: Yup.string().required("Required"),
   category: Yup.string().required("Required"),
   description: Yup.string().required("Required"),
-  img: Yup.string().required("Required"),
+  // img: Yup.string().required("Required"),
 });

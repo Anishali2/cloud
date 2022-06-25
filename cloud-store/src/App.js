@@ -16,7 +16,7 @@ const App = () => {
   const token = Cookies.get('token');
 
 useEffect(() => {
-  if(path.includes("login")|| path.includes("UserSignup") || path.includes("dmin")){
+  if(path.includes("lo")|| path.includes("UserSignup") || path.includes("dmin")){
     setHeader(<div></div>);
     setFooter(<div></div>);
   }else {
@@ -70,6 +70,7 @@ useEffect(() => {
           <Route exact path="/favourite"        element={<Path.Favourite />}     />
           <Route exact path="/contactUs"        element={<Path.ContactUs />}     />
           <Route exact path="/categories/:id"   element={<Path.Categories />}    />
+          <Route exact path="/loader"           element={<Path.Loader />}    />
           <Route path="*"                       element={<Path.Error404 />}      />
         </Routes>
       <Path.Logout/>

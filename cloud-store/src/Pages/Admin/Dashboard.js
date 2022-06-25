@@ -1,5 +1,5 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment } from 'react'
+import { Fragment,useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import AddProduct from './AddProduct'
@@ -15,6 +15,7 @@ const user = {
 const navigation = [
   { name: 'Dashboard', href: '#', current: false },
   { name: 'Products', href: '#', current: true },
+  { name: 'List Products', href: '/', current: true },
 
 ]
 const userNavigation = [
@@ -29,15 +30,28 @@ function classNames(...classes) {
 
 export default function Dashboard() {
   const dispatch = useDispatch()
+  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen2, setIsOpen2] = useState(false)
   const SignOut = (value) => {
     if (value == 2){
       dispatch({ type: 'LOG_OUT',payload: {alert: true}})
     }
   }
+  const setHeader = (value) => {
+    if(value == 1){
+      setIsOpen(true);
+      setIsOpen2(false);
+    }else {
+      setIsOpen(false);
+      setIsOpen2(true);
+    }
+
+  }
+
   return (
     <>
 
-      <div className="min-h-full">
+      <div className="min-h-full ">
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
             <>
@@ -53,21 +67,32 @@ export default function Dashboard() {
                     </div>
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
-                        {navigation.map((item) => (
+                        
                           <a
-                            key={item.name}
-                            href={item.href}
+                          onClick={() => setHeader(1)}
                             className={classNames(
-                              item.current
+                              isOpen
                                 ? 'bg-gray-900 text-white'
-                                : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                : 'text-gray-300 cursor-pointer hover:bg-gray-700 hover:text-white',
+                              'px-3 py-2 rounded-md cursor-pointer text-sm font-medium'
+                            )}
+                            // aria-current={item.current ? 'page' : undefined}
+                          >
+                            Dashboard
+                          </a>
+                          <a
+                          onClick={() => setHeader(0)}
+                            className={classNames(
+                              isOpen2
+                                ? 'bg-gray-900 text-white cursor-pointer'
+                                : 'text-gray-300 hover:bg-gray-700 cursor-pointer hover:text-white',
                               'px-3 py-2 rounded-md text-sm font-medium'
                             )}
-                            aria-current={item.current ? 'page' : undefined}
+                            // aria-current={item.current ? 'page' : undefined}
                           >
-                            {item.name}
+                            Product
                           </a>
-                        ))}
+                        
                       </div>
                     </div>
                   </div>
@@ -139,6 +164,8 @@ export default function Dashboard() {
               <Disclosure.Panel className="md:hidden">
                 <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                   {navigation.map((item) => (
+                    <Link to={item.href} >
+
                     <Disclosure.Button
                       key={item.name}
                       as="a"
@@ -146,11 +173,12 @@ export default function Dashboard() {
                       className={classNames(
                         item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                         'block px-3 py-2 rounded-md text-base font-medium'
-                      )}
-                      aria-current={item.current ? 'page' : undefined}
-                    >
+                        )}
+                        aria-current={item.current ? 'page' : undefined}
+                        >
                       {item.name}
                     </Disclosure.Button>
+                      </Link>
                   ))}
                 </div>
                 <div className="pt-4 pb-3 border-t border-gray-700">
@@ -188,19 +216,10 @@ export default function Dashboard() {
           )}
         </Disclosure>
 
-        <header className="bg-white shadow">
-          <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold text-gray-900">Add Product</h1>
-          </div>
-        </header>
-        {/* <main>
-          <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div className="px-4 py-6 sm:px-0">
-              <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
-            </div>
-          </div>
-        </main> */}
+        {isOpen ? 
+        null :
         <AddProduct/>
+        }
       </div>
     </>
   )

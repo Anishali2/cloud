@@ -18,6 +18,7 @@ exports.add = async(req, res, next) => {
       const updateProduct = await productModel.findByIdAndUpdate(data.productId, {qty: Number(product.qty) - Number(data.productQty)},{new:true});
       const update = await model.findByIdAndUpdate(cart._id, {productQty:total},{new:true});
       res.send(update);
+      // 
     }
   }else {
     try {

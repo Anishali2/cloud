@@ -217,10 +217,6 @@ const handleChange = (e) => {
             <div className="flex items-center">
             
 
-              <button type="button" className="p-2 -m-2 ml-5 sm:ml-7 text-gray-400 hover:text-gray-500">
-                <span className="sr-only">View grid</span>
-                <ViewGridIcon className="w-5 h-5" aria-hidden="true" />
-              </button>
               <button
                 type="button"
                 className="p-2 -m-2 ml-4 sm:ml-6 text-gray-400 hover:text-gray-500 lg:hidden"
@@ -368,7 +364,7 @@ const handleChange = (e) => {
               ))
             :
 filterProducts.map((product, index) => (
-                <div key={index} className="group relative border rounded p-4 hover:shadow-lg hover:scale-105 cursor-pointer transition">
+                <div  onClick={() => ProductDetails(product)} key={index} className="group relative border rounded p-4 hover:shadow-lg hover:scale-105 cursor-pointer transition">
                   <div className="w-full min-h-[10rem] max-h-[12rem] bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden  lg:h-80 lg:aspect-none">
                     <img
                       src={`http://localhost:4000/${product.img}`}

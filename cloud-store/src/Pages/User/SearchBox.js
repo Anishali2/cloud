@@ -22,7 +22,7 @@ export default function SearchBox() {
     getProduct().then(res => {
       dispatch({
         type: "SEARCH_BOX",
-        payload: { products: res.data, searchAlert: true },
+        payload: { products: res.data, searchAlert: false },
       });
     }
     )

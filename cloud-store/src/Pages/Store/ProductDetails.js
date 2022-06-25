@@ -20,7 +20,8 @@ export default function ProductDetails() {
   const [errorStock, setErrorStock] = useState('');
   const [data,setData] = useState({});
   const user = useSelector(state => state.users.userObj);
-
+  const isLogin = useSelector(state => state.users.isLoggedIn);
+  console.log(isLogin)
   const AddToCart = (value) => {
       addCart(value,user,qty).then(res => {
         setErrorStock("")
@@ -191,9 +192,9 @@ export default function ProductDetails() {
               <button
                 onClick={() => AddToCart(data)}
                 type="submit"
-                
-                className={`mt-10 w-full ${data.qty == 0 ? "bg-red-600 hover:bg-red-400": "bg-indigo-600 hover:bg-indigo-700" } border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-              >{ data.qty == 0 ? "Out of Stock" : "Add to Cart" }</button>
+                disabled={!isLogin? true : data.qty == 0 ? true : false}
+                className={`mt-10 w-full ${data.qty == 0 ? "bg-red-600 hover:bg-red-400 cursor-not-allowed": "bg-indigo-600 hover:bg-indigo-700" } border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+              >{!isLogin? "Login Required": data.qty == 0 ? "Out of Stock" : "Add to Cart" }</button>
           </div>
 
           <div className="py-10 lg:pt-6 lg:pb-16 lg:col-start-1 lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">

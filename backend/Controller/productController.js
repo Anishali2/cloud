@@ -1,6 +1,8 @@
 const model = require('../Model/productModel');
 
 exports.add = async(req, res, next) => {
+
+  console.log("Request",req.file)
   const data = req.body;
   var newItem = {
     name: data.name,
@@ -14,7 +16,8 @@ exports.add = async(req, res, next) => {
 
   try {
           const product = await model.create(newItem);
-          res.send(product);  
+          res.redirect("http://localhost:3000/admin")
+          // res.redirect()
   } catch (err) {
     next(err)
   }

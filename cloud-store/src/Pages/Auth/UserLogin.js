@@ -20,7 +20,7 @@ const loginUser = (values) => {
       navigate('/admin')
     }
     else{
-      navigate('/')
+      navigate('/loader')
     }
 
 }
