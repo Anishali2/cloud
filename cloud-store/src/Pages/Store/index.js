@@ -20,6 +20,7 @@ import TermsCondition from "./FooterPages/TermsCondition";
 import Logout from '../User/Logout'
 import SearchBox from "../User/SearchBox";
 import Loader from "../../Components/Loader";
+import ViewProduct from "../Admin/ViewProduct";
 
 export const Routes = {
     Home:HomePage,
@@ -43,6 +44,7 @@ export const Routes = {
     AdminSignup:AdminSignup,
     UserLogin:UserLogin,
     SearchBox:SearchBox,
-    Loader:Loader
+    Loader:Loader,
+    ViewProduct:ViewProduct
     
 }

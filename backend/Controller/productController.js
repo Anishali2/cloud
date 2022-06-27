@@ -32,6 +32,17 @@ exports.get = async(req, res, next) => {
   }
 }
 
+exports.delete = async(req, res, next) => {
+  const id = req.params.id;
+  try {
+      const product = await model.findByIdAndDelete(id);  
+      res.send(product)
+} catch (err) {
+    next(err)
+  }
+}
+
+
 exports.getProductById = async(req, res, next) => {
   const id = req.params.id;
   try {

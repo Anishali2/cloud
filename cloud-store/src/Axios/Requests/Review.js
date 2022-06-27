@@ -9,7 +9,7 @@ export function addReview(data,value){
     const reviewObj = {
         name: data.name,
         email: data.email,
-        review: value,
+        description: value,
     }
     console.log(reviewObj);
     return axiosClient.post('/review/add', JSON.stringify(reviewObj));

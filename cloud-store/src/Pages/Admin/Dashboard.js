@@ -5,6 +5,7 @@ import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import AddProduct from './AddProduct'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import ViewProduct from './ViewProduct'
 
 const user = {
   name: 'Tom Cook',
@@ -217,7 +218,7 @@ export default function Dashboard() {
         </Disclosure>
 
         {isOpen ? 
-        null :
+        <ViewProduct/> :
         <AddProduct/>
         }
       </div>

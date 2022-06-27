@@ -71,6 +71,7 @@ useEffect(() => {
           <Route exact path="/contactUs"        element={<Path.ContactUs />}     />
           <Route exact path="/categories/:id"   element={<Path.Categories />}    />
           <Route exact path="/loader"           element={<Path.Loader />}    />
+          {/* <Route exact path="/admin/pru"           element={<Path.ViewProduct />}    /> */}
           <Route path="*"                       element={<Path.Error404 />}      />
         </Routes>
       <Path.Logout/>
