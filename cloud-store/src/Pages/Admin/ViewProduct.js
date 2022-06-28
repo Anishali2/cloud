@@ -1,21 +1,30 @@
 import React, { useEffect } from "react";
-import { getProduct } from "../../Axios/Requests/Product";
+import { deleteProductById, getProduct } from "../../Axios/Requests/Product";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+
 import {Cross, Menu } from '@heroicons/react/outline'
 const ViewProduct = () => {
   const [products, setProducts] = React.useState([]);
+  const allProducts = useSelector(state => state.users.allProducts);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
-    getProduct()
-      .then((data) => {
-        setProducts(data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-  const ProductDetails = (data) => {
-    navigate(`/product/view/${data.name}`, { state: data });
+  
+        setProducts(allProducts);
+     
+  }, [allProducts]);
+  const DeleteProduct = (id) => {
+    deleteProductById(id).then ((res) => {
+      console.log(res.data);
+      dispatch({type:"ALL_PRODUCTS",payload:{products:res.data}})
+    }
+    ).catch((err) => {
+      console.log("Error",err);
+    }
+    );
+    
   };
   return (
     <div>
@@ -27,7 +36,7 @@ const ViewProduct = () => {
                 {products.map((product, index) => (
                   <>
                     <div
-                    //   onClick={() => ProductDetails(product)}
+                      onClick={() => DeleteProduct(product._id)}
                       key={index}
                       className="  relative border rounded p-4 hover:shadow-lg transition"
                     >

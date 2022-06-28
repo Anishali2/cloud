@@ -4,6 +4,7 @@ import { XIcon } from '@heroicons/react/outline'
 import { useSelector,useDispatch } from 'react-redux'
 import { cartValues } from '../../assets/constants';
 import { deleteCart } from '../../Axios/Requests/Cart';
+import { Link } from 'react-router-dom';
 
 export default function CheckoutDrawer() {
   const data = [cartValues]
@@ -27,6 +28,14 @@ export default function CheckoutDrawer() {
     }, 3000);
     
     
+  }
+  if(cartData){ 
+    var sum = 0;
+    for(var i = 0; i < cartData.length; i++){
+      sum += cartData[i].productQty * cartData[i].productPrice;
+    }
+    
+
   }
   
   return (
@@ -130,28 +139,32 @@ export default function CheckoutDrawer() {
                     <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <p>Subtotal</p>
-                        <p>$262.00</p>
+                        <p>${sum}.00</p>
                       </div>
                       <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                       <div className="mt-6">
+                        <Link to={"/checkout"} onClick={() => hideModel()}>
                         <a
                           href="/"
                           className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                        >
+                          >
                           Checkout
                         </a>
+                          </Link>
                       </div>
                       <div className="mt
                       -6 flex justify-center text-center text-sm text-gray-500">
                         <p>
                           or{' '}
+                          <Link to={"/"}>
                           <button
                             type="button"
                             className="font-medium text-indigo-600 hover:text-indigo-500"
                             onClick={() => hideModel()}
-                          >
+                            >
                             Continue Shopping<span aria-hidden="true"> &rarr;</span>
                           </button>
+                            </Link>
                         </p>
                       </div>
                     </div>

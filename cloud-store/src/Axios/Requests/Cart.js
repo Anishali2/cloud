@@ -21,3 +21,7 @@ export const addCart = async (data,user,qty) =>  {
 export function deleteCart(id){
     return axiosClient.delete(`/cart/delete/${id}`);
 }
+
+export function updateCart(id,data){
+    return axiosClient.put(`/cart/update/${id}`, {data});
+}

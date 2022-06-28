@@ -59,6 +59,26 @@ exports.delete = async(req,res,next) => {
   }
 }
 
+exports.update = async(req,res,next) => {
+  const id = req.params.id;
+  const data = req.body;
+  console.log(data.data)
+  // const cart = await model.findById(id);
+  // const product = await model.findById(cart.productId);
+  // const cartQty = cart.productQty;
+  // const totalQty = Number(cartQty) + Number(data);
+  // try {
+  //   const updateCart = await model.findByIdAndUpdate(id, {productQty:totalQty},{new:true});
+  //   const updateProduct = await productModel.findByIdAndUpdate(cart.productId, {qty:Number(product) + Number(data)},{new:true});
+
+  //   const cart = await model.find();
+
+  // }
+  // catch (err) {
+  //   next(err)
+  // }
+}
+
 
 
 

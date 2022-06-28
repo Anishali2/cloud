@@ -8,6 +8,9 @@ export function getProduct(){
 export function addProduct(data){
     return axiosClient.post('/product/add', JSON.stringify(data));
 }
-export function getProductById(data){
-    return axiosClient.post(`/product/get/${data}`);
+export function getProductById(id){
+    return axiosClient.post(`/product/get/${id}`);
+}
+export function deleteProductById(id){
+    return axiosClient.delete(`/product/delete/${id}`);
 }

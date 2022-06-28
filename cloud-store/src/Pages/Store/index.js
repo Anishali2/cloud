@@ -1,6 +1,5 @@
 import HomePage from "./HomePage";
 import AddToCart from "./AddToCart";
-import CheckoutPage from "./CheckoutPage";  
 import Error404 from "./Error404";
 import FAQ from "./FAQ";
 import ContactUs from "./ContactUs";
@@ -21,11 +20,11 @@ import Logout from '../User/Logout'
 import SearchBox from "../User/SearchBox";
 import Loader from "../../Components/Loader";
 import ViewProduct from "../Admin/ViewProduct";
+import Checkout from "./Checkout";
 
 export const Routes = {
     Home:HomePage,
     AddToCart:AddToCart,
-    CheckoutPage:CheckoutPage,
     Error404:Error404,
     FAQ:FAQ,
     Footer:Footer,
@@ -45,6 +44,7 @@ export const Routes = {
     UserLogin:UserLogin,
     SearchBox:SearchBox,
     Loader:Loader,
-    ViewProduct:ViewProduct
+    ViewProduct:ViewProduct,
+    Checkout:Checkout
     
 }

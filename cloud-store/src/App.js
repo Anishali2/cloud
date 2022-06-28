@@ -5,6 +5,7 @@ import {useDispatch , useSelector} from 'react-redux';
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { getCart } from "./Axios/Requests/Cart";
+import { getProduct } from "./Axios/Requests/Product";
 const App = () => {
 
   const [header , setHeader] = useState();
@@ -12,13 +13,15 @@ const App = () => {
   const location = useLocation();
   const path = location.pathname;
   const cart = useSelector(state => state.users.cartDrawer);
+  const consol = useSelector(state => state.users);
+  console.log("App ~ console", consol)
   const dispatch = useDispatch();
   const token = Cookies.get('token');
 
 useEffect(() => {
   if(path.includes("lo")|| path.includes("UserSignup") || path.includes("dmin")){
-    setHeader(<div></div>);
-    setFooter(<div></div>);
+    setHeader(<div/>);
+    setFooter(<div/>);
   }else {
     setHeader(<Path.MainHeader/>)
     setFooter(<Path.Footer/>)
@@ -26,7 +29,7 @@ useEffect(() => {
 
 }, [path])
 
-
+// Getting User Value
   useEffect(() => { 
     axios.get('http://localhost:4000/user/authenticate', {
     headers: {'Authorization': `token ${token}`}
@@ -39,13 +42,22 @@ useEffect(() => {
   }, []);
 
 
-  
+// Getting Cart Value
   useEffect(() => {
     getCart().then(res => {
-     dispatch({type:'CART_DRAWER',payload:{cartData:res.data,drawer:cart}})  
+     dispatch({type:'CART_DRAWER',payload:{drawer:cart,cartData:res.data}})  
     }
     )
   }, [cart])
+
+  // Getting Product Value
+  useEffect(() => {
+    getProduct().then(res => {
+     dispatch({type:'ALL_PRODUCTS',payload:{products:res.data}})  
+    }
+    )
+  }, [cart])
+
 
 
   return (
@@ -64,14 +76,13 @@ useEffect(() => {
           <Route exact path="/UserSignup"       element={<Path.UserSignup />}    />
           <Route exact path="/"                 element={<Path.Home />}      />
           <Route exact path="/addtocart"        element={<Path.AddToCart />}     />
-          <Route exact path="/checkout"         element={<Path.CheckoutPage />}  />
           <Route exact path="/faq"              element={<Path.FAQ />}           />
           <Route exact path="/footer"           element={<Path.Footer />}        />
           <Route exact path="/favourite"        element={<Path.Favourite />}     />
+          <Route exact path="/checkout"         element={<Path.Checkout />}     />
           <Route exact path="/contactUs"        element={<Path.ContactUs />}     />
           <Route exact path="/categories/:id"   element={<Path.Categories />}    />
           <Route exact path="/loader"           element={<Path.Loader />}    />
-          {/* <Route exact path="/admin/pru"           element={<Path.ViewProduct />}    /> */}
           <Route path="*"                       element={<Path.Error404 />}      />
         </Routes>
       <Path.Logout/>

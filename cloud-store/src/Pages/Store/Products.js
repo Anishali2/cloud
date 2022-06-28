@@ -5,10 +5,13 @@ import { useNavigate } from 'react-router-dom'
 import { FilterIcon, MinusSmIcon, PlusSmIcon, ViewGridIcon } from '@heroicons/react/solid'
 import { getProduct } from '../../Axios/Requests/Product'
 import { subCategories ,filters} from '../../assets/constants'
+import { useSelector } from 'react-redux'
 const Products = () => {
     const [products, setProducts] = useState([]);
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
     const navigate = useNavigate();
+    const allProducts = useSelector(state => state.users.allProducts);
+
     const [obj,setObj] = useState({
     productss: products,
     categories: {
@@ -26,13 +29,8 @@ const Products = () => {
     navigate(`/product/view/${data.name}`, { state: data });
   }
     useEffect(() => {
-      getProduct().then(res => {
-          setProducts(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }, []);
+      setProducts(allProducts);
+    }, [allProducts]);
 
 
 

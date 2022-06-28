@@ -8,7 +8,8 @@ const initialState = {
         cartDrawer:false,
         cartData:[],
         searchBox:false,
-        searchProducts:[]
+        searchProducts:[],
+        allProducts:[]
 
     }
   }
@@ -52,6 +53,15 @@ const currentUser = (state = initialState, action) => {
                     ...state.users,
                     cartDrawer: action.payload.drawer ,
                     cartData:action.payload.cartData,
+                    },
+
+                }
+        case 'ALL_PRODUCTS':
+            return {
+            ...state,
+                users: {
+                    ...state.users,
+                    allProducts: action.payload.products ,
                     },
 
                 }
