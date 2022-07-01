@@ -9,7 +9,6 @@ const [image, setImage] = React.useState();
             setImage(URL.createObjectURL(event.target.files[0]));
         }
        }
-       console.log("Image Url",image)
 
   return (
     <>
@@ -102,7 +101,7 @@ const [image, setImage] = React.useState();
                         id="price"
                         autoComplete="price"
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        
+                        required
                         />
                     </div>
 
@@ -132,7 +131,7 @@ const [image, setImage] = React.useState();
                         
                         >
                         <option >Select Category</option>
-                        <option value="men">Mens</option>
+                        <option className="pt-2" value="men">Mens</option>
                         <option value="women">Women</option>
                         <option value="kids">Kids</option>
                         <option value="watch">Watch</option>

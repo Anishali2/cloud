@@ -21,7 +21,6 @@ export default function ProductDetails() {
   const [data,setData] = useState({});
   const user = useSelector(state => state.users.userObj);
   const isLogin = useSelector(state => state.users.isLoggedIn);
-  console.log(isLogin)
   const AddToCart = (value) => {
       addCart(value,user,qty).then(res => {
         setErrorStock("")
@@ -67,6 +66,7 @@ export default function ProductDetails() {
     setError("No Products Available in Stock");
   }
   }
+ 
 
   return (
     <div className="bg-white">

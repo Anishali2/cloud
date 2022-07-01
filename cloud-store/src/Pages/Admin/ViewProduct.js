@@ -17,7 +17,6 @@ const ViewProduct = () => {
   }, [allProducts]);
   const DeleteProduct = (id) => {
     deleteProductById(id).then ((res) => {
-      console.log(res.data);
       dispatch({type:"ALL_PRODUCTS",payload:{products:res.data}})
     }
     ).catch((err) => {
@@ -36,11 +35,11 @@ const ViewProduct = () => {
                 {products.map((product, index) => (
                   <>
                     <div
-                      onClick={() => DeleteProduct(product._id)}
+                      
                       key={index}
                       className="  relative border rounded p-4 hover:shadow-lg transition"
                     >
-                        <div className="w-10 h-10 p-2 z-10 cursor-pointer border group shadow bg-white absolute hover:bg-red-500 -top-4 -right-5 rounded-full">
+                        <div onClick={() => DeleteProduct(product._id)} className="w-10 h-10 p-2 z-10 cursor-pointer border group shadow bg-white absolute hover:bg-red-500 -top-4 -right-5 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 group text-gray-500 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
 </svg>

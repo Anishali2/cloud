@@ -7,7 +7,7 @@ const userSchema = Schema({
     password:                   { type: String ,require:true},
     confirmPassword:            { type: String ,require:true},
     role:                       { type: String ,require:true},
-    profileImage:               { type: String ,require:true},
+    profileImage:               { type: String },
 
 
 });

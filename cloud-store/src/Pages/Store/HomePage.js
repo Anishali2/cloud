@@ -3,21 +3,14 @@ import { getProduct } from "../../Axios/Requests/Product";
 import HeroBoxes from "../../PagesComponent/HeroBoxes";
 import HeroOne from "../../PagesComponent/HeroOne";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
 const HomePage = () => {
-  const [products, setProducts] = React.useState([]);
   const navigate = useNavigate();
-  useEffect(() => {
-    getProduct().then(
-      (data) => {
-        setProducts(data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  const product = useSelector(state => state.users.allProducts);
   const ProductDetails = (data) => {
     navigate(`/product/view/${data.name}`, { state: data });
   }
+
   return (
     <div>
     <div>
@@ -26,7 +19,7 @@ const HomePage = () => {
         <div className="bg-white">
           <div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
             <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-              {products.map((product, index) => (
+              {product.map((product, index) => (
                 <div onClick={() => ProductDetails(product)} key={index} className="group relative border rounded p-4 hover:shadow-lg hover:scale-105 cursor-pointer transition">
                   <div className="w-full min-h-72 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden  lg:h-80 lg:aspect-none">
                     <img

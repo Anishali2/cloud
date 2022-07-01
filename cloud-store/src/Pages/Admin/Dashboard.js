@@ -1,4 +1,3 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment,useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
@@ -14,9 +13,9 @@ const user = {
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }
 const navigation = [
-  { name: 'Dashboard', href: '#', current: false },
-  { name: 'Products', href: '#', current: true },
-  { name: 'List Products', href: '/', current: true },
+  { name: 'Dashboard', href: '#', current: true },
+  { name: 'Products', href: '#', current: false },
+  { name: 'List Products', href: '#', current: false },
 
 ]
 const userNavigation = [
@@ -31,8 +30,9 @@ function classNames(...classes) {
 
 export default function Dashboard() {
   const dispatch = useDispatch()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
   const [isOpen2, setIsOpen2] = useState(false)
+  const [navigationBar, setNavigationBar] = useState(navigation)
   const SignOut = (value) => {
     if (value == 2){
       dispatch({ type: 'LOG_OUT',payload: {alert: true}})
@@ -42,13 +42,27 @@ export default function Dashboard() {
     if(value == 1){
       setIsOpen(true);
       setIsOpen2(false);
-    }else {
-      setIsOpen(false);
+    }else  {
+      setIsOpen(false); 
       setIsOpen2(true);
     }
 
   }
 
+
+  const IndexValue = (i) => {
+    // onclick to set the current value from false to true
+   const newValue =  navigationBar.map((item, index) => {
+      if(index == i){
+        item.current = true;
+      }else{
+        item.current = false;
+      }
+      return item;
+    }
+    )
+    setNavigationBar(newValue)
+  }
   return (
     <>
 
@@ -69,30 +83,18 @@ export default function Dashboard() {
                     <div className="hidden md:block">
                       <div className="ml-10 flex items-baseline space-x-4">
                         
-                          <a
-                          onClick={() => setHeader(1)}
-                            className={classNames(
-                              isOpen
-                                ? 'bg-gray-900 text-white'
-                                : 'text-gray-300 cursor-pointer hover:bg-gray-700 hover:text-white',
-                              'px-3 py-2 rounded-md cursor-pointer text-sm font-medium'
-                            )}
-                            // aria-current={item.current ? 'page' : undefined}
-                          >
-                            Dashboard
-                          </a>
-                          <a
-                          onClick={() => setHeader(0)}
-                            className={classNames(
-                              isOpen2
-                                ? 'bg-gray-900 text-white cursor-pointer'
-                                : 'text-gray-300 hover:bg-gray-700 cursor-pointer hover:text-white',
-                              'px-3 py-2 rounded-md text-sm font-medium'
-                            )}
-                            // aria-current={item.current ? 'page' : undefined}
-                          >
-                            Product
-                          </a>
+                         {navigationBar.map((item, index) => (
+                          <Link to={item.href} key={index} onClick={() => IndexValue(index)}>
+                            <div className={classNames(
+                              'flex items-center px-3 py-2 rounded-md text-sm font-medium text-white focus:outline-none focus:text-white focus:bg-gray-700',
+                              item.current ? 'text-white bg-gray-900' : 'text-gray-300 hover:text-white bg-transparent'
+                            )}>
+                              {item.name}
+                            </div>
+                          </Link>
+                        ))}
+
+                        
                         
                       </div>
                     </div>
@@ -164,15 +166,16 @@ export default function Dashboard() {
 
               <Disclosure.Panel className="md:hidden">
                 <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                  {navigation.map((item) => (
+                  {navigationBar.map((item, index) => (
                     <Link to={item.href} >
 
                     <Disclosure.Button
                       key={item.name}
                       as="a"
                       href={item.href}
+                      onClick={() => IndexValue(index)}
                       className={classNames(
-                        item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                        item.current ? 'bg-gray-600 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                         'block px-3 py-2 rounded-md text-base font-medium'
                         )}
                         aria-current={item.current ? 'page' : undefined}
@@ -217,9 +220,9 @@ export default function Dashboard() {
           )}
         </Disclosure>
 
-        {isOpen ? 
-        <ViewProduct/> :
-        <AddProduct/>
+        {navigationBar[0].current ? 
+        <h1 >Dashboard</h1> :
+        navigationBar[1].current ? <AddProduct/> : <ViewProduct/>
         }
       </div>
     </>

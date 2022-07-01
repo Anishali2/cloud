@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { useSelector,useDispatch } from "react-redux"
 import { XIcon } from '@heroicons/react/outline'
 import { deleteCart, updateCart } from "../../Axios/Requests/Cart";
@@ -10,9 +10,7 @@ export default function Checkout() {
   
   const DeleteProduct = (id) => {
     deleteCart(id).then ((res) => {
-      console.log(res.data);
       dispatch({type:"CART_DRAWER",payload:{drawer:false,cartData:res.data}})
-      console.log("res.data", res.data)
       const deletedCart = res.data.filter(item => item.userId === userObj._id)
       setCartProducts(deletedCart)
     
@@ -24,23 +22,19 @@ export default function Checkout() {
     );
     
   };
-  const updateQty = (id,qty) => {
 
-    const newCart = cartProducts.map(item => {
-
-      if(item._id === id){
-        item.productQty = qty;
+    useEffect (() => {
+      if(cartProducts.length === 0){
+      setCartProducts(userObj)
       }
-      
-      return item;
     }
-    );
-    setCartProducts(newCart);
-  }
+    ,[userObj])
+
 
   const updatedQuantity = (id,data) => {
      updateCart(id,data).then ((res) => {
-      console.log(res.data);
+      setCartProducts(res.data)
+      
     }
     ).catch((err) => {
       console.log("Error",err);
@@ -48,7 +42,8 @@ export default function Checkout() {
     );
 
   }
-  console.log("Remaining Cart",cartProducts);
+ 
+
     return (
       <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
@@ -185,7 +180,7 @@ export default function Checkout() {
               <div className="px-4 sm:px-0">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">Products</h3>
                 <div className="mt-8">
-                        <div className="flow-root max-">
+                        <div className="flow-root max-h-60">
                           <ul role="list" className="-my-6 divide-y divide-gray-200">
                             {cartProducts.map((product,index) => (
                               <li key={product.productId} className="flex py-6">

@@ -1,13 +1,20 @@
-import React,{useEffect} from 'react'
+import React,{useEffect,useState} from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { addReview } from '../../Axios/Requests/Review'
-import Toastify from '../../Components/Toastify'
+
 const ContactUs = () => {
     const user = useSelector(state => state.users.userObj)
+    const isLoggedIn = useSelector(state => state.users.isLoggedIn)
+    const [email, setEmail] = useState('')
+    const [name, setName] = useState('')
     const [review, setReview] = React.useState('')
 const addUserReview = (data) => {
-    
+  const reviewObj = {
+    name: name,
+    email:email,
+  }
+    const newUser = user ? user : reviewObj
   addReview(user,review).then(res => {
     setReview("")
     toast.success("Message Send Successfully")
@@ -20,6 +27,7 @@ const addUserReview = (data) => {
 useEffect(() => {
   addUserReview()
 }, [])
+
 
 
   return (
@@ -37,13 +45,13 @@ useEffect(() => {
         <div class="p-2 w-1/2">
           <div class="relative">
             <label for="name" class="leading-7 text-sm text-gray-600">Name</label>
-            <input type="text" value={user.name}  disabled={true} id="name" name="name" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+            <input type="text" value={user.name}  disabled={isLoggedIn ? true : false} id="name" name="name" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
           </div>
         </div>
         <div class="p-2 w-1/2">
           <div class="relative">
             <label for="email" class="leading-7 text-sm text-gray-600">Email</label>
-            <input type="email" disabled={true}  value={user.email} id="email" name="email" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
+            <input type="email" disabled={isLoggedIn ? true : false} on value={user.email} id="email" name="email" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"/>
           </div>
         </div>
         <div class="p-2 w-full">

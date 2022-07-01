@@ -14,9 +14,10 @@ const App = () => {
   const path = location.pathname;
   const cart = useSelector(state => state.users.cartDrawer);
   const consol = useSelector(state => state.users);
-  console.log("App ~ console", consol)
   const dispatch = useDispatch();
   const token = Cookies.get('token');
+
+
 
 useEffect(() => {
   if(path.includes("lo")|| path.includes("UserSignup") || path.includes("dmin")){
@@ -36,7 +37,7 @@ useEffect(() => {
     }).then((res) => {
       dispatch({type:'SET_CURRENT_USER',payload:{login_state:true,user:res.data}});
     }).catch((error) => {
-      // console.log(error);
+      console.log(error);
     });
 
   }, []);
@@ -54,8 +55,7 @@ useEffect(() => {
   useEffect(() => {
     getProduct().then(res => {
      dispatch({type:'ALL_PRODUCTS',payload:{products:res.data}})  
-    }
-    )
+    })
   }, [cart])
 
 

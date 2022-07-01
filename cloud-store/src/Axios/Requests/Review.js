@@ -4,11 +4,11 @@ import {axiosClient} from '../api';
 export function getReview(){
     return axiosClient.get('/product/get');
 }
-export function addReview(data,value){
+export function addReview(user,value){
 
     const reviewObj = {
-        name: data.name,
-        email: data.email,
+        name: user.name,
+        email: user.email,
         description: value,
     }
     console.log(reviewObj);
