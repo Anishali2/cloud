@@ -32,5 +32,9 @@ app.use('/cart', cartRoutes);
 const reviewRoutes = require('./Routes/reviewRoutes');
 app.use('/review', reviewRoutes);
 
+//--// Test Routes \\--\\
+const testRoutes = require('./Routes/testRoutes');
+app.use('/test', testRoutes);
+
 app.listen(port, () => console.log(`listening on http://localhost:${port}`));
 

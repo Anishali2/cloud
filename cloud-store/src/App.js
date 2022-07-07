@@ -6,6 +6,7 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 import { getCart } from "./Axios/Requests/Cart";
 import { getProduct } from "./Axios/Requests/Product";
+
 const App = () => {
 
   const [header , setHeader] = useState();
@@ -16,7 +17,6 @@ const App = () => {
   const consol = useSelector(state => state.users);
   const dispatch = useDispatch();
   const token = Cookies.get('token');
-
 
 
 useEffect(() => {

@@ -2,17 +2,21 @@ import { useState,useEffect } from "react"
 import { useSelector,useDispatch } from "react-redux"
 import { XIcon } from '@heroicons/react/outline'
 import { deleteCart, updateCart } from "../../Axios/Requests/Cart";
-
+import { Formik,Form,Field } from "formik";
+import { checkoutSchema } from "../../Components/Validation/CheckoutSchema";
+import { CheckoutInitialValues } from "../../assets/constants";
 export default function Checkout() {
   const userObj = useSelector(state => state.users.cartData);
    const [cartProducts, setCartProducts] = useState(userObj);
+   const inputValues = "mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
   const dispatch = useDispatch();
   
   const DeleteProduct = (id) => {
     deleteCart(id).then ((res) => {
       dispatch({type:"CART_DRAWER",payload:{drawer:false,cartData:res.data}})
       const deletedCart = res.data.filter(item => item.userId === userObj._id)
-      setCartProducts(deletedCart)
+      setCartProducts(res.data)
+      console.log("deletedCart", deletedCart)
     
      
     }
@@ -33,6 +37,8 @@ export default function Checkout() {
 
   const updatedQuantity = (id,data) => {
      updateCart(id,data).then ((res) => {
+      // const deletedCart = res.data.filter(item => item.userId === userObj._id)
+
       setCartProducts(res.data)
       
     }
@@ -46,6 +52,23 @@ export default function Checkout() {
 
     return (
       <>
+                    <Formik
+                validationSchema={checkoutSchema}
+                initialValues={CheckoutInitialValues}
+                onSubmit={(values) => {
+                  console.log(values);
+                }}
+                >
+                {({ values,
+                    touched,
+                    errors,
+                    dirty,
+                    isSubmitting,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    handleReset }) => (
+                      <Form>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
        
         <div className="mt-10 sm:mt-0">
@@ -54,77 +77,89 @@ export default function Checkout() {
             <div className="mt-5 md:mt-0 md:col-span-2">
               
                 
-                <div className="shadow overflow-hidden sm:rounded-md">
-                  <div className="px-4 py-5 bg-white sm:p-6">
+                <div className="shadow overflow-hidden sm:rounded-md ">
+                  <div className="px-4 py-5 bg-white sm:p-6 max-w-xl mx-auto">
+
                     <div className="grid grid-cols-6 gap-6">
-                      <div className="col-span-6 sm:col-span-3">
-                        <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
-                          First name
-                        </label>
-                        <input
-                          type="text"
-                          name="first-name"
-                          id="first-name"
-                          autoComplete="given-name"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
-  
-                      <div className="col-span-6 sm:col-span-3">
-                        <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
-                          Last name
-                        </label>
-                        <input
-                          type="text"
-                          name="last-name"
-                          id="last-name"
-                          autoComplete="family-name"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
-  
-                      <div className="col-span-6 sm:col-span-4">
+                        
+                      <div className="col-span-6 sm:col-span-6">
                         <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
                           Email address
                         </label>
                         <input
                           type="text"
                           name="email-address"
+                          placeholder="Enter your email"
                           id="email-address"
                           autoComplete="email"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          className={inputValues}
                         />
                       </div>
   
-                      <div className="col-span-6 sm:col-span-3">
-                        <label htmlFor="country" className="block text-sm font-medium text-gray-700">
-                          Country
+                      <div className="col-span-6 sm:col-span-6">
+                        <label htmlFor="email-address" className="block text-sm font-medium text-gray-700">
+                          Name On Card
                         </label>
-                        <select
-                          id="country"
-                          name="country"
-                          autoComplete="country-name"
-                          className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        >
-                          <option>United States</option>
-                          <option>Canada</option>
-                          <option>Mexico</option>
-                        </select>
+                        <input
+                          type="text"
+                          placeholder=""
+                          name="email-address"
+                          id="email-address"
+                          autoComplete="email"
+                          className={inputValues}
+                        />
                       </div>
   
                       <div className="col-span-6">
                         <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
-                          Street address
+                          Card Nummber
                         </label>
                         <input
                           type="text"
                           name="street-address"
                           id="street-address"
                           autoComplete="street-address"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          className={inputValues}
                         />
                       </div>
   
+                      <div className="sm:col-span-4">
+                        <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
+                          Expiration Date (MM/YY)
+                        </label>
+                        <input
+                          type="text"
+                          name="first-name"
+                          id="first-name"
+                          autoComplete="given-name"
+                          className={inputValues}
+                        />
+                      </div>
+  
+                      <div className="col-span-6 sm:col-span-2">
+                        <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
+                          CVC
+                        </label>
+                        <input
+                          type="text"
+                          name="last-name"
+                          id="last-name"
+                          autoComplete="family-name"
+                          className={inputValues}
+                        />
+                      </div>
+                      <div className="col-span-6">
+                        <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
+                          Address
+                        </label>
+                        <input
+                          type="text"
+                          name="street-address"
+                          id="street-address"
+                          autoComplete="street-address"
+                          className={inputValues}
+                        />
+                      </div>
                       <div className="col-span-6 sm:col-span-6 lg:col-span-2">
                         <label htmlFor="city" className="block text-sm font-medium text-gray-700">
                           City
@@ -134,8 +169,8 @@ export default function Checkout() {
                           name="city"
                           id="city"
                           autoComplete="address-level2"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                        />
+                          className={inputValues}
+                        ></input>
                       </div>
   
                       <div className="col-span-6 sm:col-span-3 lg:col-span-2">
@@ -147,7 +182,7 @@ export default function Checkout() {
                           name="region"
                           id="region"
                           autoComplete="address-level1"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          className={inputValues}
                         />
                       </div>
   
@@ -160,18 +195,19 @@ export default function Checkout() {
                           name="postal-code"
                           id="postal-code"
                           autoComplete="postal-code"
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          className={inputValues}
                         />
                       </div>
                     </div>
-                  </div>
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                     <button
                       type="submit"
+                      onClick={handleSubmit}
                       className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                      Save
+                      Checkout
                     </button>
+                  </div>
                   </div>
                 </div>
             
@@ -189,7 +225,7 @@ export default function Checkout() {
                                     src={`http://localhost:4000/${product.productImage}`}
                                     // alt={product.productName}
                                     className="h-full w-full object-cover object-center"
-                                  />
+                                    />
                                 </div>
 
                                 <div className="ml-4 flex flex-1 flex-col">
@@ -244,6 +280,10 @@ export default function Checkout() {
       
         </div>
     
+                                        </Form>
+                    
+                                        )}
+                                        </Formik>
       </>
     )
   }

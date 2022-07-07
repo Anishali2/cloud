@@ -147,3 +147,15 @@ export const userLoginValues = {
       description:'',
       
     }
+    export const CheckoutInitialValues = {
+      email: '',
+      nameOnCard: '',
+      number: '',
+      expireDate: '',
+      cvv: '',
+      address: '',
+      city: '',
+      state:'',
+      zip: '',
+  
+  }
