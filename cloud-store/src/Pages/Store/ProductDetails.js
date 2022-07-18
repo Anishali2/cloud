@@ -4,8 +4,10 @@ import { useLocation } from 'react-router-dom';
 import { useState,useEffect } from 'react';
 import ReactImageMagnify from 'react-image-magnify';
 import { addCart } from '../../Axios/Requests/Cart';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import { getProductById } from '../../Axios/Requests/Product';
+import {ToastContainer,toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const reviews = { href: '#', average: 4, totalCount: 117 }
 function classNames(...classes) {
@@ -19,15 +21,34 @@ export default function ProductDetails() {
   const [error, setError] = useState('');
   const [errorStock, setErrorStock] = useState('');
   const [data,setData] = useState({});
-  const user = useSelector(state => state.users.userObj);
-  const isLogin = useSelector(state => state.users.isLoggedIn);
+  const user = useSelector(state => state.users);
+  const isLogin = user.isLoggedIn
+  const dispatch = useDispatch();
+  
+    const notify = ()=>{
+ 
+      // Calling toast method by passing string
+      toast.success('Cart Updated', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        })
+      }
   const AddToCart = (value) => {
+    console.log("value",value, "user",user , "qty",qty)
       addCart(value,user,qty).then(res => {
+        dispatch({type:'CART_DRAWER',payload:{drawer:user.cartDrawer,cartData:res.data}});
         setErrorStock("")
         setQty(1)
+        notify();
+        
       }
       ).catch(err => {
-        setErrorStock(err.response.data.message);
+        setErrorStock(err.response);
       }
       )
   }
@@ -49,6 +70,8 @@ export default function ProductDetails() {
     if (e === "+1") {
       if (data.qty > qty) {
         setQty(qty + 1);
+        setError("");
+
       }
     } else if (e === "-1") {
       if (qty > 1) {
@@ -209,6 +232,10 @@ export default function ProductDetails() {
         </div>
       </div>
 : <div>Loading...</div>}
+        <ToastContainer />
+
     </div>
   )
 }
+
+

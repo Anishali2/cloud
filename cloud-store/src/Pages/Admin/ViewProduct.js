@@ -16,14 +16,9 @@ const ViewProduct = () => {
      
   }, [allProducts]);
   const DeleteProduct = (id) => {
-    deleteProductById(id).then ((res) => {
-      dispatch({type:"ALL_PRODUCTS",payload:{products:res.data}})
-    }
-    ).catch((err) => {
-      console.log("Error",err);
-    }
-    );
     
+    dispatch({type:'DELETE_PRODUCT',payload:{alert:true,id:id}})
+
   };
   return (
     <div>

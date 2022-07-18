@@ -1,14 +1,59 @@
 
-import React from "react";
+import React, {useState, useEffect,useContext,useCallback } from "react";
+import {Formik} from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 export default function Example() {
-const [image, setImage] = React.useState();
 
+const [image, setImage] = React.useState();
+const dispatch = useDispatch();
    const  onImageChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             setImage(URL.createObjectURL(event.target.files[0]));
         }
        }
+
+       const notify = ()=>{
+ 
+        toast.success('Product Created Successfully', {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          })
+        }
+       const createUser = useCallback(async (body) => {
+        try {
+            const formData = new FormData();
+            formData.append('name', body.name);
+            formData.append('price', body.price);
+            formData.append('qty', body.qty);
+            formData.append('description', body.description);
+            formData.append('category', body.category);
+            formData.append('img', body.img);
+
+           
+            const fetched = await fetch(`/product/add`, {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await fetched.json();
+            dispatch({type:"ALL_PRODUCTS",payload:{products:data}});
+            notify();
+
+        } catch (e) {console.log(e)}
+    }, []);
+
+    const handleCreate = (values, {resetForm}) => {
+        console.log(values);
+        createUser(values);
+        
+        resetForm({});
+    };
 
   return (
     <>
@@ -54,21 +99,52 @@ const [image, setImage] = React.useState();
           </div>
           <div className="mt-5 md:mt-0 md:col-span-2">
             {/*  */}
-            <form action="http://localhost:4000/product/add" method="POST"  encType="multipart/form-data" id="category">
+                  <Formik
+                    enableReinitialize
+                    initialValues={{
+                      name:'',
+                      img:'',
+                      price:'',
+                      qty:'',
+                      category:'',
+                      description:'',
+                    }}
+                    onSubmit={handleCreate}
+                >
+                    {({
+                          values,
+                          errors,
+                          touched,
+                          handleBlur,
+                          handleChange,
+                          handleSubmit,
+                          isSubmitting,
+                          setFieldValue,
+                          resetForm
+                      }) => (
+                        <form onSubmit={handleSubmit} className="row align-center">
+            {/* <form action="http://localhost:4000/product/add" method="POST"  encType="multipart/form-data" id="category"> */}
               <div className="shadow overflow-hidden sm:rounded-md">
                 <div className="px-4 py-5 bg-white sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
 
-                    
+                            
+                                    
+                                    
+                                    
+                            
                     <div className="col-span-6 sm:col-span-4">
                       <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
                         Product Name
                       </label>
                       <input
                       
-                        type="text"
+                      type="text"
                         name="name"
                         id="name"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.name}
                         autoComplete="given-name"
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                       />
@@ -83,11 +159,12 @@ const [image, setImage] = React.useState();
                         type="file"
                         name="img"
                         id="img"
-                        onChange={(e) => onImageChange(e)}
+                        // onChange={(e) => onImageChange(e)}
+                        onChange={(event) => [setFieldValue("img", event.currentTarget.files[0]),onImageChange(event)]} 
                         autoComplete="given-name"
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         
-                      />
+                        />
 
                     <div className="col-span-6 sm:col-span-4">
                       <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
@@ -96,9 +173,11 @@ const [image, setImage] = React.useState();
                       <input
 
                         type="number"
-
                         name="price"
                         id="price"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.price}
                         autoComplete="price"
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         required
@@ -113,6 +192,9 @@ const [image, setImage] = React.useState();
                         type="text"
                         name="qty"
                         id="qty"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.qty}
                         autoComplete="qty"
                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         
@@ -127,6 +209,9 @@ const [image, setImage] = React.useState();
                         id="category"
                         name="category" 
                         form="category"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.category}
                         className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         
                         >
@@ -144,7 +229,11 @@ const [image, setImage] = React.useState();
                       <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
                         Product Description
                       </label>
-                      <textarea name="description" id="description" rows="4" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Leave a comment..."></textarea>
+                      <textarea name="description" id="description" rows="4"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.description}
+                        class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Leave a comment..."></textarea>
 
                     </div>
 
@@ -158,13 +247,15 @@ const [image, setImage] = React.useState();
                   <button
                     type="submit"
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
+                    >
                     Save
                   </button>
                 </div>
               </div>
               </div>
-            </form>
+                    </form>
+                    )}
+                    </Formik>    
           </div>
         </div>
       </div>

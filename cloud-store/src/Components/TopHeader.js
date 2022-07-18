@@ -30,7 +30,8 @@ export default function TopHeader() {
     const isLoggenIn = useSelector(state => state.users.userObj.role);
     const cartData = useSelector(state => state.users.cartData);
     const cartuser = useSelector((state) => state.users)
-    const newCartData = cartuser.cartData.filter(item => item.userId === cartuser.userObj._id)
+    // const newCartData = cartuser.cartData.filter(item => item.userId === cartuser.userObj._id)
+    const newProducts = cartData.products ? cartData.products : []
     const dispatch = useDispatch()
     const [userState, setUserState] = React.useState(userNavigate)
     useEffect(() => {
@@ -62,7 +63,7 @@ export default function TopHeader() {
                         type="button"
                         className=" bg-transparent p-1 mr-2 rounded-full text-white focus:outline-none hover:text-slate-400 relative flex justify-center items-center"
                       >
-                        <div className='    absolute -top-1 -right-1 text-sm'>{newCartData.length}</div>
+                        <div className='    absolute -top-1 -right-1 text-sm'>{newProducts.length == 0 ? "" : newProducts.length }</div>
                         <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                       </button>
                         <div>

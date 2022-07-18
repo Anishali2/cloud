@@ -24,9 +24,9 @@ const addUserReview = (data) => {
     }
     )
 }
-useEffect(() => {
-  addUserReview()
-}, [])
+// useEffect(() => {
+//   addUserReview()
+// }, [])
 
 
 

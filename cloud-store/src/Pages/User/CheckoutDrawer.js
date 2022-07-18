@@ -5,40 +5,59 @@ import { useSelector,useDispatch } from 'react-redux'
 import { cartValues } from '../../assets/constants';
 import { deleteCart } from '../../Axios/Requests/Cart';
 import { Link } from 'react-router-dom';
+import {ToastContainer,toast} from 'react-toastify';
 
 export default function CheckoutDrawer() {
   const data = [cartValues]
-  const [undo , setUndo] = useState()
   const cart = useSelector((state) => state.users)
-  var x = 0
+  const userId = cart.userObj._id
   const dispatch = useDispatch()
   const hideModel =() => {
     dispatch({type:'CART_DRAWER',payload:{drawer:false,cartData:cart.cartData}})
   }
-  const cartData = cart.cartData.filter(item => item.userId === cart.userObj._id)
+  const cartData = cart.cartData;
+  const notify = ()=>{
+ 
+    // Calling toast method by passing string
+    toast.error('Product Removed', {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      })
+    }
   const UndoValue = (i) => {
-    setUndo(i)
     
-    setTimeout(() => {
-      setUndo()
-        deleteCart(i).then(res => {
+    console.log("Undo Value",i,)
+
+        deleteCart(i,userId).then(res => {
           dispatch({type:'CART_DRAWER',payload:{cartData:res.data,drawer:true}})  
-         }
-         )
-    }, 3000);
+          console.log("Hello",res);
+          notify();
+        }
+        
+        ) .catch(err => {
+          console.log(err);
+        }
+        )
     
     
   }
   if(cartData){ 
     var sum = 0;
     for(var i = 0; i < cartData.length; i++){
-      sum += cartData[i].productQty * cartData[i].productPrice;
+      sum += cartData.products[i].qty * cartData.products[i].qty;
     }
     
 
   }
+  const checkCartData = cartData.products ? cartData.products : []
   
   return (
+    <>
     <Transition.Root show={cart.cartDrawer} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={() => hideModel()}>
         <Transition.Child
@@ -84,13 +103,14 @@ export default function CheckoutDrawer() {
 
                       <div className="mt-8">
                         <div className="flow-root">
-                          <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {cartData.map((product,index) => (
-                              <li key={product.productId} className="flex py-6">
+                        <ul role="list" className="-my-6 divide-y divide-gray-200">
+                          
+                            {checkCartData.map((item,index) => (
+                              <li key={index} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img
-                                    src={`http://localhost:4000/${product.productImage}`}
-                                    alt={product.productName}
+                                    src={`http://localhost:4000/${item.product.img}`}
+                                    alt={item.product.name}
                                     className="h-full w-full object-cover object-center"
                                   />
                                 </div>
@@ -99,33 +119,23 @@ export default function CheckoutDrawer() {
                                   <div>
                                     <div className="flex justify-between text-base font-medium text-gray-900">
                                       <h3>
-                                        <a href="#"> {product.productName} </a>
+                                        <a href="#"> {item.product.name} </a>
                                       </h3>
-                                      <p className="ml-4">${product.productPrice}</p>
+                                      <p className="ml-4">{item.product.price}$</p>
                                     </div>
                                     {/* <p className="mt-1 text-sm text-gray-500">{product.color}</p> */}
                                   </div>
                                   <div className="flex flex-1 items-end justify-between text-sm">
-                                    <p className="text-gray-500">Qty {product.productQty}</p>
+                                    <p className="text-gray-500">Qty {item.qty}</p>
 
                                     <div className="flex">
-                                      {product._id == undo ? 
                                       <button
-                                      type="button"
-                                      className="font-medium border -mb-3 rounded-lg p-2 bg-white hover:bg-[#cfcfcf]"
-                                      onClick={() => setUndo()}
-                                      >
-                                        Undo
-                                      </button>
-                                      :
-                                      <button
-                                      type="button"
-                                      className="font-medium text-indigo-600 hover:text-indigo-500"
-                                      onClick={() => UndoValue(product._id)}
+                                        onClick={() => UndoValue(item._id)}
+                                        type="button"
+                                        className="font-medium text-indigo-600 hover:text-indigo-500"
                                       >
                                         Remove
                                       </button>
-                                      }
                                     </div>
                                   </div>
                                 </div>
@@ -176,5 +186,7 @@ export default function CheckoutDrawer() {
         </div>
       </Dialog>
     </Transition.Root>
+      <ToastContainer/>
+      </>
   )
 }

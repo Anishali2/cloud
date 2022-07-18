@@ -21,7 +21,7 @@ import SearchBox from "../User/SearchBox";
 import Loader from "../../Components/Loader";
 import ViewProduct from "../Admin/ViewProduct";
 import Checkout from "./Checkout";
-
+import DeleteProduct from "../Admin/DeleteProduct";
 export const Routes = {
     Home:HomePage,
     AddToCart:AddToCart,
@@ -45,6 +45,7 @@ export const Routes = {
     SearchBox:SearchBox,
     Loader:Loader,
     ViewProduct:ViewProduct,
-    Checkout:Checkout
+    Checkout:Checkout,
+    DeleteProduct:DeleteProduct
     
 }

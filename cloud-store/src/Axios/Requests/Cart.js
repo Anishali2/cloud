@@ -1,23 +1,52 @@
+import { axiosClient } from "../api";
 
-import {axiosClient} from '../api';
-
-
-export function getCart(){
-    return axiosClient.get('/cart/get');
+export function getCart(id) {
+  return axiosClient.get(`/cart/get/${id}`);
 }
-export const addCart = async (data,user,qty) =>  {
-    
-    const obj = {
-        userId:        user._id,
-        productId:     data._id,
-        productQty:     qty,
+export function addCart  (data, user, qty)  {
+  const obj = {
+    userId: user.userObj._id,
+    productId: data._id,
+    productQty: qty,
+  };
+
+  if (user.cartData.length === 0) {
+    // if empty add new product
+    return axiosClient.put("/cart/new", JSON.stringify(obj));
+  } else {
+    // update Qty
+    const filter = user.cartData.products.filter((item) => item.product._id === data._id) 
+    if(filter.length !== 0){
+      console.log("Update Qty WOrking")
+      return axiosClient.put("/cart/updateqty", JSON.stringify(obj));
+    }else {
+      // add new product
+      console.log("Add New Product WOrking")
+
+      return axiosClient.put("/cart/newproduct", JSON.stringify(obj));
     }
-    return await axiosClient.post('/cart/add', JSON.stringify(obj));
+    } 
+
+
+
+};
+export function deleteCart(id,newId) {
+const obj = {
+  userId: newId,
 }
-export function deleteCart(id){
-    return axiosClient.delete(`/cart/delete/${id}`);
+  return axiosClient.put(`/cart/delete/${id}`, JSON.stringify(obj));
 }
 
-export function updateCart(id,data){
-    return axiosClient.put(`/cart/update/${id}`, {data});
+export function updateCart(id, data) {
+  return axiosClient.put(`/cart/update/${id}`, { data });
+}
+export function checkoutQty(data, user, qty) {
+  console.log("checkoutQty",data.product._id)
+  const obj = {
+    userId: user,
+    productId: data.product._id,
+    productQty: qty,
+  };
+  return axiosClient.put("/cart/updateqty", JSON.stringify(obj));
+
 }

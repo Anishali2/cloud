@@ -14,13 +14,15 @@ const App = () => {
   const location = useLocation();
   const path = location.pathname;
   const cart = useSelector(state => state.users.cartDrawer);
-  const consol = useSelector(state => state.users);
+  const id = useSelector(state => state.users.userObj._id);
+  const data = useSelector(state => state.users);
+  console.log("App.js ~ line 19", data)
   const dispatch = useDispatch();
   const token = Cookies.get('token');
 
 
 useEffect(() => {
-  if(path.includes("lo")|| path.includes("UserSignup") || path.includes("dmin")){
+  if(path.includes("login")|| path.includes("UserSignup") || path.includes("dmin")){
     setHeader(<div/>);
     setFooter(<div/>);
   }else {
@@ -45,11 +47,15 @@ useEffect(() => {
 
 // Getting Cart Value
   useEffect(() => {
-    getCart().then(res => {
-     dispatch({type:'CART_DRAWER',payload:{drawer:cart,cartData:res.data}})  
+  if(id) {
+
+    getCart(id).then(res => {
+      dispatch({type:'CART_DRAWER',payload:{drawer:cart,cartData:res.data}})  
     }
     )
-  }, [cart])
+  }
+    
+  }, [cart,id])
 
   // Getting Product Value
   useEffect(() => {
@@ -70,24 +76,25 @@ useEffect(() => {
           <Route exact path="/header"           element={<Path.MainHeader />}      />
           <Route exact path="/products"         element={<Path.Products />}        />
           <Route exact path="/product/view/:id" element={<Path.ProductDetails />}  />
-          <Route exact path="/logoutalert"      element={<Path.Logout />}        />
-          <Route exact path="/login"            element={<Path.UserLogin />}     />
-          <Route exact path="/adminsignup"      element={<Path.AdminSignup />}   />
-          <Route exact path="/UserSignup"       element={<Path.UserSignup />}    />
-          <Route exact path="/"                 element={<Path.Home />}      />
-          <Route exact path="/addtocart"        element={<Path.AddToCart />}     />
-          <Route exact path="/faq"              element={<Path.FAQ />}           />
-          <Route exact path="/footer"           element={<Path.Footer />}        />
-          <Route exact path="/favourite"        element={<Path.Favourite />}     />
-          <Route exact path="/checkout"         element={<Path.Checkout />}     />
-          <Route exact path="/contactUs"        element={<Path.ContactUs />}     />
-          <Route exact path="/categories/:id"   element={<Path.Categories />}    />
-          <Route exact path="/loader"           element={<Path.Loader />}    />
-          <Route path="*"                       element={<Path.Error404 />}      />
+          <Route exact path="/logoutalert"      element={<Path.Logout />}          />
+          <Route exact path="/login"            element={<Path.UserLogin />}       />
+          <Route exact path="/adminsignup"      element={<Path.AdminSignup />}     />
+          <Route exact path="/UserSignup"       element={<Path.UserSignup />}      />
+          <Route exact path="/"                 element={<Path.Home />}            />
+          <Route exact path="/addtocart"        element={<Path.AddToCart />}       />
+          <Route exact path="/faq"              element={<Path.FAQ />}             />
+          <Route exact path="/footer"           element={<Path.Footer />}          />
+          <Route exact path="/favourite"        element={<Path.Favourite />}       />
+          <Route exact path="/checkout"         element={<Path.Checkout />}        />
+          <Route exact path="/contactUs"        element={<Path.ContactUs />}       />
+          <Route exact path="/categories/:id"   element={<Path.Categories />}      />
+          <Route exact path="/loader"           element={<Path.Loader />}          />
+          <Route path="*"                       element={<Path.Error404 />}        />
         </Routes>
       <Path.Logout/>
       <Path.CheckoutDrawer/>
       <Path.SearchBox/>
+      <Path.DeleteProduct/>
       {footer}
 </>
   );

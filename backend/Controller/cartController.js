@@ -1,10 +1,48 @@
 const model = require("../Model/cartModel");
 const productModel = require("../Model/productModel");
 
+
 exports.add = async (req, res, next) => {
   const data = req.body;
 
-  const obj = {
+  
+
+  const cart = await model.findOne({user: data.userId})
+    .populate(["user", "products.product"]);
+      const product = await productModel.findOne({ _id: data.productId });
+      const filterProduct =  cart.products.filter(item => item.product._id == data.productId);
+     const total = filterProduct ?   filterProduct[0].qty + data.productQty : data.productQdty;
+
+    if ( total >= product.qty) {
+      res.status(400).send({ status: "Error", message: "Not enough stock" });
+      console.log({ status: "Error", message: "Not enough stock" });
+    } else {
+      if (1 == 1) {
+        const updateCart = await model.findOneAndUpdate(
+          { user: data.userId, "products.product": data.productId },
+          { $inc: { "products.$.qty": data.productQty } },
+          { new: true }
+        );
+        
+        const updateProduct = await productModel.findByIdAndUpdate(
+                data.productId,
+                 { qty: product.qty - data.productQty },
+                 { new: true }
+               );
+        const updatedCarts = await model.find().populate("products.product");
+        res.send(updatedCarts);
+  
+      }else if (1 == 2) {
+        const updateProduct = await productModel.findByIdAndUpdate(cart._id)
+        console.log("=.==>>..>>",cart._id)
+      }
+    }
+};
+exports.new = async (req, res, next) => {
+  console.log("New");
+  const data = req.body;
+
+  const newCart = {
     user: data.userId,
     products: [
       {
@@ -13,74 +51,69 @@ exports.add = async (req, res, next) => {
       },
     ],
   };
-  // increment function for product qty
-  
-  console.log("OBJECT =>", obj);
-  // check if the user and product exist in cart
-  const cart = await model.findOne({user: data.userId,"products.product": data.productId,})
-    .populate(["user", "products.product"]);
+  try {
     const product = await productModel.findOne({ _id: data.productId });
-
-  const filterProduct = cart.products.filter(item => item.product._id == data.productId);
-
-  console.log("Filter Products =>",filterProduct)
-
-  const filterId = filterProduct;
-  if (filterProduct) {
-     
-     const total = filterProduct[0].qty + data.productQty;
-     console.log("Product Qty =>",product.qty , "total", total)
- 
-
-    if ( 
-      // total >= product.qty
-      1 !== 1) {
-      res.status(400).send({ status: "Error", message: "Not enough stock" });
-      console.log({ status: "Error", message: "Not enough stock" });
-    } else {
-      const updateCart = await model.findByIdAndUpdate(
-        cart._id,
-        { $push: { products: { _id: filterId, qty: data.productQty } } },
-        { new: true }
-      );
-      const updatedCarts = await model.find();
-      res.send(updatedCarts);
-
-    }
+    const cart = await model.create(newCart);
+    const quantity = product.qty - data.productQty;
+    await productModel.findByIdAndUpdate( data.productId,{ qty: quantity },{ new: true });
+    const updatedCarts = await model.findOne({user:data.userId}).populate("products.product");
+    res.send(updatedCarts);
+  } catch (err) {
+    next(err);
   }
- // else {
-  //     console.log("Checking Value", Number(total));
-  //     const updateProduct = await productModel.findByIdAndUpdate(
-  //       data.productId,
-  //       { qty: Number(product.qty) - Number(data.productQty) },
-  //       { new: true }
-  //     );
-  //     const update = await model.findByIdAndUpdate(
-  //       cart._id,
-  //       { productQty: total },
-  //       { new: true }
-  //     );
-  //     res.send(update);
-  //     //
-  //   }
-  // } else {
-  //   try {
-  //     const cart = await model.create(data);
-  //     const updateProduct = await productModel.findByIdAndUpdate(
-  //       data.productId,
-  //       { qty: Number(product.qty) - Number(cart.productQty) },
-  //       { new: true }
-  //     );
-  //     res.send(cart);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // }
-};
+
+}
+//\\ UPDATE CART QUANTITY //\\
+exports.updateqty = async (req, res, next) => {
+  console.log("Update Qty");
+
+  const data = req.body;
+  try {
+    const product = await productModel.findOne({ _id: data.productId });
+    const updateCart = await model.findOneAndUpdate(
+      { user: data.userId, "products.product": data.productId },
+      { $inc: { "products.$.qty": + data.productQty } 
+    },
+      { new: true }
+    );
+    const updateProduct = await productModel.findByIdAndUpdate(
+      data.productId,
+      { qty: product.qty - data.productQty },
+      { new: true }
+    );
+    const updatedCarts = await model.findOne({user:data.userId}).populate("products.product");
+    res.send(updatedCarts);
+    } catch (err) {
+    next(err);
+  }
+}
+
+//\\ NEW CART //\\
+exports.newproduct = async (req, res, next) => {
+  console.log("New Product");
+  const data = req.body;
+  const newCart = { 
+        product: data.productId,
+        qty: data.productQty,
+      }
+  try {
+    const product = await productModel.findOne({ _id: data.productId });
+    const updateCart = await model.findOneAndUpdate({ user: data.userId, },{ $push: { products:newCart } },{ new: true });    
+    const quantity = product.qty - data.productQty;
+    await productModel.findByIdAndUpdate( data.productId,{ qty: quantity },{ new: true });
+    const updatedCarts = await model.findOne({user:data.userId}).populate("products.product");
+    res.send(updatedCarts);
+  }
+  catch (err) {
+    next(err);
+  } 
+}
 
 exports.get = async (req, res, next) => {
+  const id = req.params.id;
+  console.log("id",id)
   try {
-    const cart = await model.find();
+    const cart = await model.findOne({user:id}).populate("products.product");
     res.send(cart);
   } catch (err) {
     next(err);
@@ -88,27 +121,28 @@ exports.get = async (req, res, next) => {
 };
 
 exports.delete = async (req, res, next) => {
-  const id = req.params.id;
-  // const newId = '62b3126ba8747827486f8bcc'
-  const cart = await model.findById(id); // 1 Clear
-  const productId = cart.productId;
-  const product = await productModel.findById(productId); // 2 Clear
-  const productQtyById = product.qty; // 3 Clear
-  const cartQty = cart.productQty; // 4 Clear
-  const newTotalQty = Number(cartQty) + Number(productQtyById); // 5 Clear
-  try {
-    const updateProduct = await productModel.findByIdAndUpdate(
-      productId,
-      { qty: newTotalQty },
+  const productId = req.params.id;
+  const userId = req.body.userId;
+
+  const cart = await model.findOne({user: userId})
+  const filterProduct =  cart.products.filter(item => item._id == productId);
+  const product = filterProduct[0];
+  const updateCart = await productModel.findOneAndUpdate(
+    { _id: product.product },
+    { $inc: { qty: product.qty } },
+    { new: true }
+  );    
+    const deleteCart = await model.findOneAndUpdate(
+      { user: userId },
+      { $pull: { products: { _id: productId } } },
       { new: true }
-    ); // 6 Clear
-    const deleteCart = await model.findByIdAndDelete(id); // 7 Clear
-    const updatedCarts = await model.find();
-    res.send(updatedCarts);
-  } catch (err) {
-    next(err);
-  }
+    );
+    const updatedCart = await model.findOne({user:userId}).populate("products.product");
+      res.send(updatedCart);
+    console.log("filterProduct",filterProduct[0].product)
+
 };
+
 
 exports.update = async (req, res, next) => {
   const id = req.params.id; // 1: Getting user Id

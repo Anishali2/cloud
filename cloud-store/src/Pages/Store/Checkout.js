@@ -5,9 +5,13 @@ import { deleteCart, updateCart } from "../../Axios/Requests/Cart";
 import { Formik,Form,Field } from "formik";
 import { checkoutSchema } from "../../Components/Validation/CheckoutSchema";
 import { CheckoutInitialValues } from "../../assets/constants";
+import { checkoutQty } from './../../Axios/Requests/Cart';
 export default function Checkout() {
   const userObj = useSelector(state => state.users.cartData);
-   const [cartProducts, setCartProducts] = useState(userObj);
+  const user_id = useSelector(state => state.users.userObj._id);
+  console.log("Checkout.js ~ line 11", user_id)
+  
+   const [cartProducts, setCartProducts] = useState(userObj.products);
    const inputValues = "mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
   const dispatch = useDispatch();
   
@@ -35,13 +39,14 @@ export default function Checkout() {
     ,[userObj])
 
 
-  const updatedQuantity = (id,data) => {
-     updateCart(id,data).then ((res) => {
+  const updatedQuantity = (id,qty) => {
+    checkoutQty(id,user_id,qty).then ((res) => {
       // const deletedCart = res.data.filter(item => item.userId === userObj._id)
 
-      setCartProducts(res.data)
+      setCartProducts(res.data.products)
       
     }
+
     ).catch((err) => {
       console.log("Error",err);
     }
@@ -218,12 +223,16 @@ export default function Checkout() {
                 <div className="mt-8">
                         <div className="flow-root max-h-60">
                           <ul role="list" className="-my-6 divide-y divide-gray-200">
+                          {/* {cartProducts.map((product,index) => (
+                            <li key={index} className="px-6 py-4">
+                              {product.product.name}
+                              </li>
+                          ))} */}
                             {cartProducts.map((product,index) => (
-                              <li key={product.productId} className="flex py-6">
+                              <li key={product._id} className="flex py-6">
                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                   <img
-                                    src={`http://localhost:4000/${product.productImage}`}
-                                    // alt={product.productName}
+                                    src={`http://localhost:4000/${product.product.img}`}
                                     className="h-full w-full object-cover object-center"
                                     />
                                 </div>
@@ -232,13 +241,12 @@ export default function Checkout() {
                                   <div>
                                     <div className="flex justify-between text-base font-medium text-gray-900">
                                       <h3>
-                                        <a href="#"> {product.productName} </a>
+                                        <a href="#"> {product.product.name} </a>
                                       </h3>
                                       <XIcon className="block h-6 w-6 hover:text-red-500 cursor-pointer" aria-hidden="true" onClick={() => DeleteProduct(product._id)} />
                                     </div>
-                                    <a href="#"> ${product.productPrice} </a>
+                                    <a href="#"> ${product.product.price} </a>
 
-                                    {/* <p className="mt-1 text-sm text-gray-500">{product.color}</p> */}
                                   </div>
                                   <div className="flex flex-1 items-end justify-between text-sm">
                                     <p className="text-gray-500">Qty</p>
@@ -246,19 +254,17 @@ export default function Checkout() {
                                     <div className="flex ">
                                        
                                       <button
-                                      onClick={() => updatedQuantity(product._id,0)}
+                                      onClick={() => updatedQuantity(product,-1)}
                                       type="button"
                                       className="font-medium px-2.5 border -mb-3 rounded-lg p-2 bg-white hover:bg-[#cfcfcf]"
-                                      // onClick={() => setUndo()}
                                       >
                                         -
                                       </button>
-                                      <p className="pt-2 px-3">{product.productQty}</p>
+                                      <p className="pt-2 px-3">{product.qty}</p>
                                       <button
-                                      onClick={() => updatedQuantity(product._id,1)}
+                                      onClick={() => updatedQuantity(product,1)}
                                       type="button"
                                       className="font-medium border px-2 -mb-3 rounded-lg p-2 bg-white hover:bg-[#cfcfcf]"
-                                      // onClick={() => setUndo()}
                                       >
                                         +
                                       </button>

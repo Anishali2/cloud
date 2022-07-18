@@ -4,12 +4,14 @@ const initialState = {
         isLoggedIn: false,
         userObj: {},
         logoutAlert:false,
-        headerToken:'',
+        deleteProduct:false,
+        deleteProductId:'',
         cartDrawer:false,
         cartData:[],
         searchBox:false,
         searchProducts:[],
-        allProducts:[]
+        allProducts:[],
+
 
     }
   }
@@ -36,6 +38,16 @@ const currentUser = (state = initialState, action) => {
                         },
                         
                     }
+        case 'DELETE_PRODUCT':
+                        return {
+                        ...state,
+                            users: {
+                                ...state.users,
+                                deleteProduct:action.payload.alert,
+                                deleteProductId:action.payload.id
+                                },
+                                
+                            }
         case 'SEARCH_BOX':
             return {
             ...state,
