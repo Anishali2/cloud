@@ -3,39 +3,37 @@ import {Formik} from "formik";
 import { addProduct } from '../../../Axios/Requests/Product';
  const PrivacyPolicy = () => {
 
-
-    const createUser = useCallback(async (body) => {
-        try {
-            const formData = new FormData();
-            formData.append('name', body.name);
-            formData.append('price', body.price);
-            formData.append('qty', body.qty);
-            formData.append('description', body.description);
-            formData.append('category', body.category);
-            formData.append('img', body.img);
-
-           
-            // use simple fetch method to send data to backend
-            const fetched = await fetch(`/product/add`, {
-                method: 'POST',
-                body: formData,
-                // headers: {
-                //     'Content-Type': 'multipart/form-data'
-                // }
-            });
-            const data = await fetched.json();
-            console.log(data);
-
-        } catch (e) {console.log(e)}
-    }, []);
-
-    const handleCreate = (values, {resetForm}) => {
-        console.log(values);
-        createUser(values);
-        
-        // resetForm({});
-    };
-
+    var stripe = 'pk_test_51LN9rySFCbq4hsXBa0sF6HRMsolKvgBOxS2zzi5eydLXriFuMM8naadDZwwZGm2N2sk6goohJOXrsRudcJ2NiFM200vO9doYx0';
+    const elements = stripe.elements();
+    var style = {
+        base: {
+            color: "#fff"
+        }
+    }
+    const card = elements.create('card', { style });
+    card.mount('#card-element');
+    const form = document.querySelector('form');
+    const errorEl = document.querySelector('#card-errors');
+    const stripeTokenHandler = token => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('type', 'hidden');
+        hiddenInput.setAttribute('name', 'stripeToken');
+        hiddenInput.setAttribute('value', token.id);
+        form.appendChild(hiddenInput);
+    console.log(form)
+        form.submit();
+    }
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+    stripe.createToken(card).then(res => {
+            if (res.error) errorEl.textContent = res.error.message;
+            else {
+                console.log(res.token)
+                stripeTokenHandler(res.token);
+            }
+        })
+    })
+    
     return (
         <div className="wrapper">
             <div className="row">
@@ -49,83 +47,14 @@ import { addProduct } from '../../../Axios/Requests/Product';
             </div>
 
             
-                <Formik
-                    enableReinitialize
-                    initialValues={{
-                      name:'',
-                      img:'',
-                      price:'',
-                      qty:'3',
-                      category:'kids',
-                      description:'no description',
-                    }}
-                    onSubmit={handleCreate}
-                >
-                    {({
-                          values,
-                          errors,
-                          touched,
-                          handleBlur,
-                          handleChange,
-                          handleSubmit,
-                          isSubmitting,
-                          setFieldValue,
-                          resetForm
-                      }) => (
-                        <form onSubmit={handleSubmit} className="row align-center">
-                            <div className="column small-12 large-7">
-                                <div className="form-item flex-container align-middle mb_20">
-                                    <label className="text text-14 font-semibold font-uppercase text-right small-4">
-                                        Photos
-                                    </label>
-                                    <input id="img" type="file" name="img" className="file_input"
-                                           onChange={(event) => {
-                                               setFieldValue("img", event.currentTarget.files[0]);
-                                           }} />
-                                </div>
-                            </div>
-
-                            <div className="column small-12 large-7">
-                                <div className="form-item flex-container align-middle mb_20">
-                                    <label className="text text-14 font-semibold font-uppercase text-right small-4">
-                                        Name
-                                    </label>
-                                    <input
-                                        className="text text-17 "
-                                        type="text"
-                                        name="name"
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        value={values.name}
-                                    />
-                                </div>
-                            </div>
-                            <div className="column small-12 large-7">
-                                <div className="form-item flex-container align-middle mb_20">
-                                    <label className="text text-14 font-semibold font-uppercase text-right small-4">
-                                    price
-                                    </label>
-                                    <input
-                                        className="text text-17"
-                                        type="text"
-                                        name="price"
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        value={values.price}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="column small-12 mt_20">
-                                <div className="btn_group flex-container flex-wrap align-middle align-center">
-                                    <button className="btn-lg radius-8" theme="blue"
-                                             type="submit"
-                                    >Submit</button>
-                                </div>
-                            </div>
-                        </form>
-                    )}
-                </Formik>
+            <form action="/charge" method="POST" class="flex flex-col w-1/3">
+            <input class="bg-transparent text-white p-2 h-10 mb-4" type="text" name="name" placeholder="Name"/>
+            <input type="email" class="bg-transparent text-white p-2 h-10 mb-4" name="email" placeholder="Email"/>
+            <input class="bg-transparent text-white p-2 h-10 mb-4" type="text" name="amount" placeholder="Amount"/>
+<div id="card-element" class="bg-transparent text-white p-2 h-10 mb-4"></div>
+            <div id="card-errors" role="alert"></div>
+            <button class="text-white bg-purple-900 p-4 rounded">Submit Payment</button>
+        </form>
         </div>
     )
 };

@@ -68,7 +68,7 @@ const deleteRequest = () => {
                     </div>
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-white">
-                      Confirm Logout
+                      Confirm Remove Product
 
                       </Dialog.Title>
                       <div className="mt-2">
@@ -85,7 +85,7 @@ const deleteRequest = () => {
                     className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={() => deleteRequest()}
                   >
-                    Logout
+                    Delete
                   </button>
                   <button
                     type="button"

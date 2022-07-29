@@ -5,59 +5,86 @@ import { deleteCart, updateCart } from "../../Axios/Requests/Cart";
 import { Formik,Form,Field } from "formik";
 import { checkoutSchema } from "../../Components/Validation/CheckoutSchema";
 import { CheckoutInitialValues } from "../../assets/constants";
-import { checkoutQty } from './../../Axios/Requests/Cart';
+import { checkoutQty, getCart } from './../../Axios/Requests/Cart';
+  import { loadStripe } from "@stripe/stripe-js";
+  import { Elements } from "@stripe/react-stripe-js";
+  import CheckoutForm from "./CheckoutForm";
+
 export default function Checkout() {
   const userObj = useSelector(state => state.users.cartData);
   const user_id = useSelector(state => state.users.userObj._id);
-  console.log("Checkout.js ~ line 11", user_id)
-  
-   const [cartProducts, setCartProducts] = useState(userObj.products);
-   const inputValues = "mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+  const allProducts = useSelector(state => state.users.allProducts);
+  const [clientSecret, setClientSecret] = useState("");
+  const [data, setData] = useState({});
+  const [error, setError] = useState("");
+  const [cartProducts, setCartProducts] = useState(
+    // check if array is empty
+    userObj.length > 0 ? userObj.products : []
+  );
+  const stripePromise = loadStripe("pk_test_51LN9rySFCbq4hsXBa0sF6HRMsolKvgBOxS2zzi5eydLXriFuMM8naadDZwwZGm2N2sk6goohJOXrsRudcJ2NiFM200vO9doYx0");
   const dispatch = useDispatch();
-  
-  const DeleteProduct = (id) => {
-    deleteCart(id).then ((res) => {
-      dispatch({type:"CART_DRAWER",payload:{drawer:false,cartData:res.data}})
-      const deletedCart = res.data.filter(item => item.userId === userObj._id)
-      setCartProducts(res.data)
-      console.log("deletedCart", deletedCart)
-    
-     
-    }
-    ).catch((err) => {
-      console.log("Error",err);
-    }
-    );
-    
-  };
+  const inputValues = "mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
 
-    useEffect (() => {
-      if(cartProducts.length === 0){
-      setCartProducts(userObj)
-      }
-    }
-    ,[userObj])
-
+ console.log("userObj",userObj)
 
   const updatedQuantity = (id,qty) => {
-    checkoutQty(id,user_id,qty).then ((res) => {
-      // const deletedCart = res.data.filter(item => item.userId === userObj._id)
+    // filter product with id in all product
+    console.log("all Products",id)
+    const product = allProducts.filter(product => product._id === id.product._id);
+    console.log("product",product)
+    if (product.qty != 0 && product.qty !== qty) {
 
-      setCartProducts(res.data.products)
+          checkoutQty(id,user_id,qty).then ((res) => {
+            setCartProducts(res.data.products)
+          }).catch((err) => {
+            console.log("Error",err);
+          }
+          );
+  
+        
       
+  
+    }else {
+      setError("No Products Available in Stock");
     }
-
-    ).catch((err) => {
-      console.log("Error",err);
-    }
-    );
+    
 
   }
  
+  console.log("New User Object ",cartProducts)
+  
+  useEffect(() => {
+    getCart(user_id).then((res) => {
+      setCartProducts(res.data.products)
+    }
+    ).catch((err) => {
+      console.log("Error",err);
+    }
+    );
+  }, [user_id]);
+
+    useEffect(() => {         
+      // Create PaymentIntent as soon as the page loads
+      fetch("/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+      })
+        .then((res) => res.json())
+        .then((data) => setClientSecret(data.clientSecret));
+    }, []);
+  
+    const appearance = {
+      theme: 'stripe',
+    };
+    const options = {
+      clientSecret,
+      appearance,
+    };
 
     return (
       <>
-                    <Formik
+              <Formik
                 validationSchema={checkoutSchema}
                 initialValues={CheckoutInitialValues}
                 onSubmit={(values) => {
@@ -115,95 +142,15 @@ export default function Checkout() {
                         />
                       </div>
   
-                      <div className="col-span-6">
-                        <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
-                          Card Nummber
-                        </label>
-                        <input
-                          type="text"
-                          name="street-address"
-                          id="street-address"
-                          autoComplete="street-address"
-                          className={inputValues}
-                        />
-                      </div>
+                      
+                    
   
-                      <div className="sm:col-span-4">
-                        <label htmlFor="first-name" className="block text-sm font-medium text-gray-700">
-                          Expiration Date (MM/YY)
-                        </label>
-                        <input
-                          type="text"
-                          name="first-name"
-                          id="first-name"
-                          autoComplete="given-name"
-                          className={inputValues}
-                        />
-                      </div>
-  
-                      <div className="col-span-6 sm:col-span-2">
-                        <label htmlFor="last-name" className="block text-sm font-medium text-gray-700">
-                          CVC
-                        </label>
-                        <input
-                          type="text"
-                          name="last-name"
-                          id="last-name"
-                          autoComplete="family-name"
-                          className={inputValues}
-                        />
-                      </div>
-                      <div className="col-span-6">
-                        <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
-                          Address
-                        </label>
-                        <input
-                          type="text"
-                          name="street-address"
-                          id="street-address"
-                          autoComplete="street-address"
-                          className={inputValues}
-                        />
-                      </div>
-                      <div className="col-span-6 sm:col-span-6 lg:col-span-2">
-                        <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-                          City
-                        </label>
-                        <input
-                          type="text"
-                          name="city"
-                          id="city"
-                          autoComplete="address-level2"
-                          className={inputValues}
-                        ></input>
-                      </div>
-  
-                      <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                        <label htmlFor="region" className="block text-sm font-medium text-gray-700">
-                          State / Province
-                        </label>
-                        <input
-                          type="text"
-                          name="region"
-                          id="region"
-                          autoComplete="address-level1"
-                          className={inputValues}
-                        />
-                      </div>
-  
-                      <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                        <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700">
-                          ZIP / Postal code
-                        </label>
-                        <input
-                          type="text"
-                          name="postal-code"
-                          id="postal-code"
-                          autoComplete="postal-code"
-                          className={inputValues}
-                        />
-                      </div>
                     </div>
+                      {clientSecret && (
+                        <Elements options={options} stripe={stripePromise}>
+                          <CheckoutForm />
+                        </Elements>
+                      )}
                   <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                     <button
                       type="submit"
@@ -243,7 +190,7 @@ export default function Checkout() {
                                       <h3>
                                         <a href="#"> {product.product.name} </a>
                                       </h3>
-                                      <XIcon className="block h-6 w-6 hover:text-red-500 cursor-pointer" aria-hidden="true" onClick={() => DeleteProduct(product._id)} />
+                                      <XIcon className="block h-6 w-6 hover:text-red-500 cursor-pointer" aria-hidden="true" />
                                     </div>
                                     <a href="#"> ${product.product.price} </a>
 
@@ -321,26 +268,38 @@ export default function Checkout() {
 
 
 
+  // import React, { useState, useEffect } from "react";
 
+  
+  // import CheckoutForm from "./CheckoutForm";
+  // import "./App.css";
 
-
-
-
-
-
-
-
-
-
-
-
-  // const obj = {
-  //   productId : res.data.productId,
-  //   productName : res.data.productName,
-  //   productPrice : res.data.productPrice,
-  //   productQty : res.data.productQty,
-  //   productImage : res.data.productImage,
-  //   userId : res.data.userId,
-  //   userEmail : res.data.userEmail,
-
+  
+  // export default function App() {
+  //   const [clientSecret, setClientSecret] = useState("");
+  
+  //   useEffect(() => {
+  //     // Create PaymentIntent as soon as the page loads
+  //     fetch("/create-payment-intent", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => setClientSecret(data.clientSecret));
+  //   }, []);
+  
+  //   const appearance = {
+  //     theme: 'stripe',
+  //   };
+  //   const options = {
+  //     clientSecret,
+  //     appearance,
+  //   };
+  
+  //   return (
+  //     <div className="App">
+  //       
+  //     </div>
+  //   );
   // }

@@ -54,8 +54,8 @@ exports.new = async (req, res, next) => {
   try {
     const product = await productModel.findOne({ _id: data.productId });
     const cart = await model.create(newCart);
-    const quantity = product.qty - data.productQty;
-    await productModel.findByIdAndUpdate( data.productId,{ qty: quantity },{ new: true });
+    // const quantity = product.qty - data.productQty;
+    // await productModel.findByIdAndUpdate( data.productId,{ qty: quantity },{ new: true });
     const updatedCarts = await model.findOne({user:data.userId}).populate("products.product");
     res.send(updatedCarts);
   } catch (err) {
@@ -69,18 +69,18 @@ exports.updateqty = async (req, res, next) => {
 
   const data = req.body;
   try {
-    const product = await productModel.findOne({ _id: data.productId });
+    // const product = await productModel.findOne({ _id: data.productId });
     const updateCart = await model.findOneAndUpdate(
       { user: data.userId, "products.product": data.productId },
       { $inc: { "products.$.qty": + data.productQty } 
     },
       { new: true }
     );
-    const updateProduct = await productModel.findByIdAndUpdate(
-      data.productId,
-      { qty: product.qty - data.productQty },
-      { new: true }
-    );
+    // const updateProduct = await productModel.findByIdAndUpdate(
+    //   data.productId,
+    //   { qty: product.qty - data.productQty },
+    //   { new: true }
+    // );
     const updatedCarts = await model.findOne({user:data.userId}).populate("products.product");
     res.send(updatedCarts);
     } catch (err) {
@@ -97,10 +97,10 @@ exports.newproduct = async (req, res, next) => {
         qty: data.productQty,
       }
   try {
-    const product = await productModel.findOne({ _id: data.productId });
+    // const product = await productModel.findOne({ _id: data.productId });
     const updateCart = await model.findOneAndUpdate({ user: data.userId, },{ $push: { products:newCart } },{ new: true });    
-    const quantity = product.qty - data.productQty;
-    await productModel.findByIdAndUpdate( data.productId,{ qty: quantity },{ new: true });
+    // const quantity = product.qty - data.productQty;
+    // await productModel.findByIdAndUpdate( data.productId,{ qty: quantity },{ new: true });
     const updatedCarts = await model.findOne({user:data.userId}).populate("products.product");
     res.send(updatedCarts);
   }
@@ -124,14 +124,8 @@ exports.delete = async (req, res, next) => {
   const productId = req.params.id;
   const userId = req.body.userId;
 
-  const cart = await model.findOne({user: userId})
-  const filterProduct =  cart.products.filter(item => item._id == productId);
-  const product = filterProduct[0];
-  const updateCart = await productModel.findOneAndUpdate(
-    { _id: product.product },
-    { $inc: { qty: product.qty } },
-    { new: true }
-  );    
+  // const cart = await model.findOne({user: userId})
+
     const deleteCart = await model.findOneAndUpdate(
       { user: userId },
       { $pull: { products: { _id: productId } } },
@@ -139,7 +133,6 @@ exports.delete = async (req, res, next) => {
     );
     const updatedCart = await model.findOne({user:userId}).populate("products.product");
       res.send(updatedCart);
-    console.log("filterProduct",filterProduct[0].product)
 
 };
 

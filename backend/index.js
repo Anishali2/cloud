@@ -36,5 +36,9 @@ app.use('/review', reviewRoutes);
 const testRoutes = require('./Routes/testRoutes');
 app.use('/test', testRoutes);
 
+//--// Stripe Routes \\--\\
+const stripeRoutes = require('./Routes/stripeRoutes');
+app.use('/', stripeRoutes);
+
 app.listen(port, () => console.log(`listening on http://localhost:${port}`));
 

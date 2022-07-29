@@ -15,7 +15,6 @@ exports.get = async(req, res, next) => {
         profileImage: data.profileImage
       }
       const token = jwt.sign(userObj,process.env.TOKEN_SECRET); 
-      console.log("Token",token)
       // set token in cookie
       res.cookie('token', token, {
         httpOnly: false,

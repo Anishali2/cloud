@@ -65,6 +65,19 @@ useEffect(() => {
   }, [cart])
 
 
+  const [clientSecret, setClientSecret] = useState("");
+
+  useEffect(() => {
+    // Create PaymentIntent as soon as the page loads
+    fetch("/create-payment-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+    })
+      .then((res) => res.json())
+      .then((data) => setClientSecret(data.clientSecret));
+      console.log("working here")
+  }, []);
 
   return (
     <>
@@ -86,6 +99,7 @@ useEffect(() => {
           <Route exact path="/footer"           element={<Path.Footer />}          />
           <Route exact path="/favourite"        element={<Path.Favourite />}       />
           <Route exact path="/checkout"         element={<Path.Checkout />}        />
+          <Route exact path="/checkout?"        element={<Path.Checkout />}        />
           <Route exact path="/contactUs"        element={<Path.ContactUs />}       />
           <Route exact path="/categories/:id"   element={<Path.Categories />}      />
           <Route exact path="/loader"           element={<Path.Loader />}          />
